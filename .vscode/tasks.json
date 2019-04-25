@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Bellows.csproj"
+                "${workspaceFolder}/Fuelles.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Bellows.csproj"
+                "${workspaceFolder}/Fuelles.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -28,7 +28,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Bellows.csproj"
+                "${workspaceFolder}/Fuelles.csproj"
             ],
             "problemMatcher": "$tsc"
         }
