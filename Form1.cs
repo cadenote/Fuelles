@@ -142,7 +142,12 @@ namespace Fuelles
 		{
 			double dblFoldWidth;
 			double dblHeight;
-
+            byte que = 0;
+            if (pliegues.CheckedItems.Count > 0)
+            {
+                if (pliegues.CheckedItems.Contains("Positivo") == true ) que = 1;
+                if (pliegues.CheckedItems.Contains("Negativo") == true) que += 2;
+            }
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return;
 
@@ -182,23 +187,31 @@ namespace Fuelles
 				double dxa2 = dblFoldWidth / Math.Tan(a2);
 
 				double y = (double)(i + 1) * dblFoldWidth;
-				g.DrawLine(oSolidPen, 0, (float)y, (float)dblPaperWidth, (float)y);
-				g.DrawLine(oSolidPen, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
-				g.DrawLine(oSolidPen, (float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
+                if ((que & 2) == 2)
+                {
+                    g.DrawLine(oSolidPen, 0, (float)y, (float)dblPaperWidth, (float)y);
+                    g.DrawLine(oSolidPen, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
+                    g.DrawLine(oSolidPen, (float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
+                }
 
-				double dblAlt = 1.0;
+                double dblAlt = 1.0;
 				if (bAlternate)
 					if ((i & 2) == 0)
 						dblAlt = 1.0;
 					else
 						dblAlt = -1.0;
 
-				g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
-				g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
-				g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
-				g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
-				g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
-
+                if ((que & 2) == 2)
+                {
+                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
+                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
+                }
+                if ((que & 1) == 1)
+                {
+                    g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
+                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
+                    //g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
+                }
 
 				if ( bAlternate )
 					if ( (i&2)== 0 )
@@ -206,10 +219,16 @@ namespace Fuelles
 					else
 						dblAlt = 1.0;
 
-				g.DrawLine(oDottedPen, (float)(x1 - dblAlt*dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-				g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-				g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-				g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
+                if ((que & 2) == 2)
+                {
+                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
+                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
+                }
+                if ((que & 1) == 1) //exterior bajo
+                {
+                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
+                    g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
+                }
 
 				if (bAlternate) 
 					if ( (i & 2) == 0)
@@ -217,10 +236,18 @@ namespace Fuelles
 					else
 						dblAlt = -1.0;
 
-				g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-				g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-				g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-				g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
+                if ((que & 2) == 2)
+                {
+
+                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
+                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
+                }
+
+                if ((que & 1) == 1) //exterior alto
+                {
+                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
+                    g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
+                }
 			}
 
 		}
@@ -695,7 +722,12 @@ namespace Fuelles
 			UpdateCalculations();
 		}
 
-		private void txtFoldWidth_Leave(object sender, EventArgs e)
+        private void Pliegues_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateCalculations();
+        }
+
+        private void txtFoldWidth_Leave(object sender, EventArgs e)
 		{
 			UpdateCalculations();
 		}
