@@ -202,12 +202,13 @@ namespace Fuelles
             // 
             // reverso
             // 
+            this.reverso.CheckOnClick = true;
             this.reverso.FormattingEnabled = true;
             this.reverso.Items.AddRange(new object[] {
             "EspejoX",
             "EspejoY"});
             this.reverso.Location = new System.Drawing.Point(94, 226);
-            this.reverso.MinimumSize = new System.Drawing.Size(4, 20);
+            this.reverso.MinimumSize = new System.Drawing.Size(4, 50);
             this.reverso.Name = "reverso";
             this.reverso.Size = new System.Drawing.Size(120, 38);
             this.reverso.TabIndex = 13;

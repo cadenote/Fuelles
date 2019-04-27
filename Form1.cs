@@ -84,8 +84,9 @@ namespace Fuelles
             }
 
 			printDocument1.PrinterSettings = printDialog1.PrinterSettings;
-
-			UpdateCalculations();
+            pliegues.SetItemChecked(0, true);
+            pliegues.SetItemChecked(1, true);
+            UpdateCalculations();
 		}
 
 		public bool UpdateCalculations()
@@ -105,14 +106,16 @@ namespace Fuelles
                 // = Length / (FoldWidth*sin(120))
                 double dblFolds = dblLength / (dblFoldWidth * Math.Sin(dblExtensionAngle / 2 / 180 * Math.PI));
 				nFolds = (int)(dblFolds + 1.0);
-				// Round up to even number.
-				if ((nFolds & 1) == 1)
-					nFolds++;
-				// Then add mount folds
-				nFolds += nMountFolds;
 
-				// Use width and height to calculate fold dimensions
-				double dblTopWidth = dblWidth + 2 * dblFoldWidth;
+				// Then add mount folds
+				nFolds += nMountFolds; //va bien si nMountFolds es par
+
+                // Round up to even number.
+                if ((nFolds & 1) == 1)
+                    nFolds++;
+
+                // Use width and height to calculate fold dimensions
+                double dblTopWidth = dblWidth + 2 * dblFoldWidth;
 				double dblSideHeight = dblHeight + dblFoldWidth;
 
 				dblPaperWidth = dblTopWidth + 2 * dblSideHeight;
@@ -145,8 +148,8 @@ namespace Fuelles
             byte que = 0;
             if (pliegues.CheckedItems.Count > 0)
             {
-                if (pliegues.CheckedItems.Contains("Positivo") == true ) que = 1;
-                if (pliegues.CheckedItems.Contains("Negativo") == true) que += 2;
+                if (pliegues.CheckedItems.Contains("Positivo") == true ) que = 2;
+                if (pliegues.CheckedItems.Contains("Negativo") == true) que += 1;
             }
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return;
@@ -208,7 +211,7 @@ namespace Fuelles
                 }
                 if ((que & 1) == 1)
                 {
-                    g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
+                    //g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
                     g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
                     //g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
                 }

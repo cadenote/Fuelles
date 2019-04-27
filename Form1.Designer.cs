@@ -74,14 +74,14 @@ namespace Fuelles
             this.label8 = new System.Windows.Forms.Label();
             this.btnNewConfig = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.pliegues = new System.Windows.Forms.CheckedListBox();
             this.btnGCode = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblPageWidth = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.lblPageHeight = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.pliegues = new System.Windows.Forms.CheckedListBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -359,6 +359,31 @@ namespace Fuelles
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(708, 116);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(138, 17);
+            this.label11.TabIndex = 22;
+            this.label11.Text = "Lineas de Pliegue";
+            this.label11.UseMnemonic = false;
+            // 
+            // pliegues
+            // 
+            this.pliegues.CheckOnClick = true;
+            this.pliegues.FormattingEnabled = true;
+            this.pliegues.Items.AddRange(new object[] {
+            "Positivo",
+            "Negativo"});
+            this.pliegues.Location = new System.Drawing.Point(711, 138);
+            this.pliegues.MinimumSize = new System.Drawing.Size(0, 50);
+            this.pliegues.Name = "pliegues";
+            this.pliegues.Size = new System.Drawing.Size(120, 38);
+            this.pliegues.TabIndex = 21;
+            this.pliegues.SelectedIndexChanged += new System.EventHandler(this.Pliegues_SelectedIndexChanged);
+            // 
             // btnGCode
             // 
             this.btnGCode.Location = new System.Drawing.Point(403, 148);
@@ -422,30 +447,6 @@ namespace Fuelles
             this.label9.Size = new System.Drawing.Size(80, 17);
             this.label9.TabIndex = 6;
             this.label9.Text = "Alto Pagina";
-            // 
-            // pliegues
-            // 
-            this.pliegues.CheckOnClick = true;
-            this.pliegues.FormattingEnabled = true;
-            this.pliegues.Items.AddRange(new object[] {
-            "Positivo",
-            "Negativo"});
-            this.pliegues.Location = new System.Drawing.Point(711, 148);
-            this.pliegues.Name = "pliegues";
-            this.pliegues.Size = new System.Drawing.Size(120, 38);
-            this.pliegues.TabIndex = 21;
-            this.pliegues.SelectedIndexChanged += new System.EventHandler(this.Pliegues_SelectedIndexChanged);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(708, 116);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(138, 17);
-            this.label11.TabIndex = 22;
-            this.label11.Text = "Lineas de Pliegue";
-            this.label11.UseMnemonic = false;
             // 
             // Form1
             // 
