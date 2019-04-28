@@ -224,6 +224,7 @@ namespace Fuelles
             this.txtMountFolds.Name = "txtMountFolds";
             this.txtMountFolds.Size = new System.Drawing.Size(72, 22);
             this.txtMountFolds.TabIndex = 2;
+            this.txtMountFolds.TextChanged += new System.EventHandler(this.TxtMountFolds_TextChanged);
             this.txtMountFolds.Leave += new System.EventHandler(this.txtMountFolds_Leave);
             // 
             // label7
@@ -378,7 +379,7 @@ namespace Fuelles
             "Positivo",
             "Negativo"});
             this.pliegues.Location = new System.Drawing.Point(711, 138);
-            this.pliegues.MinimumSize = new System.Drawing.Size(0, 50);
+            this.pliegues.MinimumSize = new System.Drawing.Size(4, 50);
             this.pliegues.Name = "pliegues";
             this.pliegues.Size = new System.Drawing.Size(120, 38);
             this.pliegues.TabIndex = 21;

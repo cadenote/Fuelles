@@ -730,6 +730,11 @@ namespace Fuelles
             UpdateCalculations();
         }
 
+        private void TxtMountFolds_TextChanged(object sender, EventArgs e)
+        {
+            UpdateCalculations();
+        }
+
         private void txtFoldWidth_Leave(object sender, EventArgs e)
 		{
 			UpdateCalculations();
