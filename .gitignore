@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+#Ficheros que no quiero que pertenezcan al Proyecto
+Thumbs.db
+US6054194.pdf
+*.xlsx
