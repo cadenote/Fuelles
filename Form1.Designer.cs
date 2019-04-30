@@ -48,10 +48,8 @@ namespace Fuelles
 		private void InitializeComponent()
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.cboInversions = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.cboShape = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtWidth = new System.Windows.Forms.TextBox();
@@ -74,6 +72,10 @@ namespace Fuelles
             this.label8 = new System.Windows.Forms.Label();
             this.btnNewConfig = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.actualiza = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.listinv = new System.Windows.Forms.ListBox();
+            this.pared = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.pliegues = new System.Windows.Forms.CheckedListBox();
             this.btnGCode = new System.Windows.Forms.Button();
@@ -85,24 +87,14 @@ namespace Fuelles
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // cboInversions
-            // 
-            this.cboInversions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboInversions.FormattingEnabled = true;
-            this.cboInversions.Location = new System.Drawing.Point(128, 54);
-            this.cboInversions.Margin = new System.Windows.Forms.Padding(4);
-            this.cboInversions.Name = "cboInversions";
-            this.cboInversions.Size = new System.Drawing.Size(72, 24);
-            this.cboInversions.TabIndex = 1;
-            this.cboInversions.SelectedIndexChanged += new System.EventHandler(this.cboInversions_SelectedIndexChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 58);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(40, 199);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 17);
+            this.label1.Size = new System.Drawing.Size(91, 17);
             this.label1.TabIndex = 2;
             this.label1.Text = "Inversiones";
             // 
@@ -112,20 +104,9 @@ namespace Fuelles
             this.label2.Location = new System.Drawing.Point(16, 25);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 17);
+            this.label2.Size = new System.Drawing.Size(114, 17);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Forma";
-            // 
-            // cboShape
-            // 
-            this.cboShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboShape.FormattingEnabled = true;
-            this.cboShape.Location = new System.Drawing.Point(128, 21);
-            this.cboShape.Margin = new System.Windows.Forms.Padding(4);
-            this.cboShape.Name = "cboShape";
-            this.cboShape.Size = new System.Drawing.Size(160, 24);
-            this.cboShape.TabIndex = 0;
-            this.cboShape.SelectedIndexChanged += new System.EventHandler(this.cboShape_SelectedIndexChanged);
+            this.label2.Text = "Angulo de Pared";
             // 
             // label3
             // 
@@ -192,9 +173,9 @@ namespace Fuelles
             this.chkAlternateFolds.Location = new System.Drawing.Point(20, 116);
             this.chkAlternateFolds.Margin = new System.Windows.Forms.Padding(4);
             this.chkAlternateFolds.Name = "chkAlternateFolds";
-            this.chkAlternateFolds.Size = new System.Drawing.Size(125, 21);
+            this.chkAlternateFolds.Size = new System.Drawing.Size(137, 21);
             this.chkAlternateFolds.TabIndex = 3;
-            this.chkAlternateFolds.Text = "Alternate Folds";
+            this.chkAlternateFolds.Text = "Alternar pliegues";
             this.chkAlternateFolds.UseVisualStyleBackColor = true;
             this.chkAlternateFolds.CheckedChanged += new System.EventHandler(this.chkAlternateFolds_CheckedChanged);
             // 
@@ -219,7 +200,7 @@ namespace Fuelles
             // 
             // txtMountFolds
             // 
-            this.txtMountFolds.Location = new System.Drawing.Point(128, 85);
+            this.txtMountFolds.Location = new System.Drawing.Point(196, 68);
             this.txtMountFolds.Margin = new System.Windows.Forms.Padding(4);
             this.txtMountFolds.Name = "txtMountFolds";
             this.txtMountFolds.Size = new System.Drawing.Size(72, 22);
@@ -230,12 +211,12 @@ namespace Fuelles
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 89);
+            this.label7.Location = new System.Drawing.Point(17, 71);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(104, 17);
+            this.label7.Size = new System.Drawing.Size(136, 17);
             this.label7.TabIndex = 14;
-            this.label7.Text = "Mounting Folds";
+            this.label7.Text = "Pliegues de Montaje";
             // 
             // btnPrint
             // 
@@ -326,12 +307,14 @@ namespace Fuelles
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.actualiza);
+            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.listinv);
+            this.groupBox1.Controls.Add(this.pared);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.pliegues);
             this.groupBox1.Controls.Add(this.btnGCode);
             this.groupBox1.Controls.Add(this.panel1);
-            this.groupBox1.Controls.Add(this.cboShape);
-            this.groupBox1.Controls.Add(this.cboInversions);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnPageSetup);
             this.groupBox1.Controls.Add(this.label2);
@@ -359,6 +342,42 @@ namespace Fuelles
             this.groupBox1.Size = new System.Drawing.Size(899, 535);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
+            // 
+            // actualiza
+            // 
+            this.actualiza.Location = new System.Drawing.Point(168, 279);
+            this.actualiza.Name = "actualiza";
+            this.actualiza.Size = new System.Drawing.Size(95, 28);
+            this.actualiza.TabIndex = 28;
+            this.actualiza.Text = "Actualiza";
+            this.actualiza.UseVisualStyleBackColor = true;
+            this.actualiza.Click += new System.EventHandler(this.Actualiza_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(163, 251);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 22);
+            this.textBox1.TabIndex = 27;
+            // 
+            // listinv
+            // 
+            this.listinv.FormattingEnabled = true;
+            this.listinv.ItemHeight = 16;
+            this.listinv.Location = new System.Drawing.Point(37, 223);
+            this.listinv.Name = "listinv";
+            this.listinv.Size = new System.Drawing.Size(120, 84);
+            this.listinv.TabIndex = 26;
+            this.listinv.SelectedIndexChanged += new System.EventHandler(this.Listinv_SelectedIndexChanged);
+            // 
+            // pared
+            // 
+            this.pared.AutoSize = true;
+            this.pared.Location = new System.Drawing.Point(180, 25);
+            this.pared.Name = "pared";
+            this.pared.Size = new System.Drawing.Size(54, 17);
+            this.pared.TabIndex = 24;
+            this.pared.Text = "label12";
             // 
             // label11
             // 
@@ -402,10 +421,10 @@ namespace Fuelles
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(8, 185);
+            this.panel1.Location = new System.Drawing.Point(534, 185);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(882, 343);
+            this.panel1.Size = new System.Drawing.Size(356, 343);
             this.panel1.TabIndex = 19;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -460,7 +479,7 @@ namespace Fuelles
             this.Controls.Add(this.label8);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
-            this.Text = "Bellows Calculator";
+            this.Text = "Forma del Fuelle";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -470,11 +489,8 @@ namespace Fuelles
 		}
 
 		#endregion
-
-		private System.Windows.Forms.ComboBox cboInversions;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox cboShape;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox txtWidth;
@@ -505,6 +521,10 @@ namespace Fuelles
         private System.Windows.Forms.Button btnGCode;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckedListBox pliegues;
+        private System.Windows.Forms.Label pared;
+        private System.Windows.Forms.ListBox listinv;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button actualiza;
     }
 }
 

@@ -49,24 +49,16 @@ namespace Fuelles
 			m_bCalculationError = true;
 
             InitializeComponent();
+            listinv.Items.AddRange(new object[] {"72.57","27.57","0"});
+            //listinv.Items.AddRange(new object[] { "60", "30","0" });
+            m_Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-			cboShape.Items.Add(FuellesConfigElement.EBellowsShape.MediaCubierta);
-			cboShape.Items.Add(FuellesConfigElement.EBellowsShape.CajaCerrada);
-            cboShape.Items.Add(FuellesConfigElement.EBellowsShape.Abierta);
-
-            cboInversions.Items.Add(1);
-			cboInversions.Items.Add(2);
-			cboInversions.Items.Add(3);
-			cboInversions.Items.Add(4);
-
-			m_Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
-			FuelleConfig cfg = (FuelleConfig)m_Config.Sections["FuelleConfig"];
+			FuelleConfig cfg = (FuelleConfig)m_Config.Sections["FormaFuelle"];
 			if (cfg == null)
 			{
 				cfg = new FuelleConfig();
-				m_Config.Sections.Add("FuelleConfig", cfg);
-				cfg = (FuelleConfig)m_Config.Sections["FuelleConfig"];
+				m_Config.Sections.Add("FormaFuelle", cfg);
+				cfg = (FuelleConfig)m_Config.Sections["FormaFuelle"];
 				cfg.SectionInformation.ForceSave = true;
 			}
 
@@ -74,7 +66,7 @@ namespace Fuelles
 			{
 				cboConfig.Items.Add(b);
 			}
-			int nItem = cboConfig.FindStringExact( ((FuelleConfig)m_Config.Sections["FuelleConfig"]).SelectedItem );
+			int nItem = cboConfig.FindStringExact( ((FuelleConfig)m_Config.Sections["FormaFuelle"]).SelectedItem );
             if (nItem >= 0)
                 cboConfig.SelectedIndex = nItem;
             else
@@ -86,6 +78,7 @@ namespace Fuelles
 			printDocument1.PrinterSettings = printDialog1.PrinterSettings;
             pliegues.SetItemChecked(0, true);
             pliegues.SetItemChecked(1, true);
+            actualizapared();
             UpdateCalculations();
 		}
 
@@ -634,8 +627,6 @@ namespace Fuelles
 		{
 			if (m_CurrentElement != null)
 			{
-				m_CurrentElement.Inversions = (int)cboInversions.SelectedItem;
-				m_CurrentElement.BellowsShape = (FuellesConfigElement.EBellowsShape)cboShape.SelectedItem;
 				m_CurrentElement.FoldWidth = Double.Parse(txtFoldWidth.Text);
 				m_CurrentElement.Height = Double.Parse(txtHeight.Text);
 				m_CurrentElement.Width = Double.Parse(txtWidth.Text);
@@ -652,8 +643,6 @@ namespace Fuelles
 			// Load new values
 			m_CurrentElement = (FuellesConfigElement)(((ComboBox)sender).SelectedItem);
 
-			cboInversions.SelectedItem = m_CurrentElement.Inversions;
-			cboShape.SelectedItem = m_CurrentElement.BellowsShape;
 			txtFoldWidth.Text = m_CurrentElement.FoldWidth.ToString();
 			txtHeight.Text = m_CurrentElement.Height.ToString();
 			txtWidth.Text = m_CurrentElement.Width.ToString();
@@ -674,7 +663,7 @@ namespace Fuelles
 			NewName frm = new NewName();
 			if ( frm.ShowDialog(this) == DialogResult.OK )
 			{
-				FuellesCollection col = ((FuelleConfig)m_Config.Sections["FuelleConfig"]).Bellows;
+				FuellesCollection col = ((FuelleConfig)m_Config.Sections["FormaFuelle"]).Bellows;
 				if (col[frm.NameText] != null)
 				{
 					MessageBox.Show(this,"Configuration '" + frm.NameText + "' already exists");
@@ -733,6 +722,65 @@ namespace Fuelles
         private void TxtMountFolds_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculations();
+        }
+
+        private void actualizapared()
+        {
+        double angulo = 180.0f;
+        double parang;
+        double valor;
+        for (int i = 0; i < listinv.Items.Count; i++)
+            {
+                valor = Math.Pow(-1.0, (double)i);
+                parang = float.Parse(listinv.Items[i].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                angulo -= 2 * valor * parang;
+            }
+
+        pared.Text = angulo.ToString();
+
+        }
+
+        private void Listinv_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                textBox1.Text = listinv.SelectedItem.ToString();
+            }
+            catch {
+                return;
+                   }
+            actualizapared();
+       }
+
+
+        private void Actualiza_Click(object sender, EventArgs e)
+        {
+            int ix;
+            int indice = listinv.SelectedIndex;
+            int quepasa = listinv.Items.Count;
+            if (indice >= 0)
+            {
+                listinv.Items.RemoveAt(indice);
+                listinv.Items.Insert(indice, textBox1.Text);
+            }
+            //Si la lista no termina en cero ponselo
+            if (float.Parse(listinv.Items[quepasa-1].ToString()) != 0f)
+                {
+                listinv.Items.Insert(quepasa++, "0.0");
+                
+                }
+            //Si en la lista hay un cero intermedio borrala
+            for (ix=0; ix< quepasa; ix++)
+                {
+                if (float.Parse(listinv.Items[ix].ToString()) == 0f)
+                    break;
+                }
+            while (--quepasa > ix)
+                {
+                listinv.Items.RemoveAt(quepasa);
+                }
+            //actualiza angulo pared()
+            actualizapared();
         }
 
         private void txtFoldWidth_Leave(object sender, EventArgs e)
