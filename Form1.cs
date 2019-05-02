@@ -53,20 +53,20 @@ namespace Fuelles
             //listinv.Items.AddRange(new object[] { "60", "30","0" });
             m_Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-			FuelleConfig cfg = (FuelleConfig)m_Config.Sections["FormaFuelle"];
+			FuelleConfig cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
 			if (cfg == null)
 			{
 				cfg = new FuelleConfig();
-				m_Config.Sections.Add("FormaFuelle", cfg);
-				cfg = (FuelleConfig)m_Config.Sections["FormaFuelle"];
+				m_Config.Sections.Add("ParamdeFuelle", cfg);
+				cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
 				cfg.SectionInformation.ForceSave = true;
 			}
 
-			foreach (FuellesConfigElement b in cfg.Bellows)
+			foreach (FuellesConfigElement b in cfg.Fuelless)
 			{
 				cboConfig.Items.Add(b);
 			}
-			int nItem = cboConfig.FindStringExact( ((FuelleConfig)m_Config.Sections["FormaFuelle"]).SelectedItem );
+			int nItem = cboConfig.FindStringExact( ((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).SelectedItem );
             if (nItem >= 0)
                 cboConfig.SelectedIndex = nItem;
             else
@@ -451,6 +451,27 @@ namespace Fuelles
             gradbeta = gradalfa;
             return Linea;
         }
+
+        private string dimelistinv ()
+        {
+            int i;
+            String cadena = "";
+            for (i = 0; i < listinv.Items.Count-1; i++) cadena += listinv.Items[i] + ",";
+            cadena += listinv.Items[i];
+            return cadena;
+        }
+        private void cambialistinv ( string angulostring)
+            {
+            string valor;
+            string[] tokens = angulostring.Split(',');
+            int num = tokens.Length;
+            int m = listinv.Items.Count;
+            for (m = num - 1; m >= 0; m--)
+                {
+                valor = tokens[m];
+                listinv.Items.Insert(0, valor);
+                }
+            }
         public String RayaFuelles()
         {
             String solido = "";
@@ -627,7 +648,8 @@ namespace Fuelles
 		{
 			if (m_CurrentElement != null)
 			{
-				m_CurrentElement.FoldWidth = Double.Parse(txtFoldWidth.Text);
+                m_CurrentElement.Inversiones = dimelistinv();
+                m_CurrentElement.FoldWidth = Double.Parse(txtFoldWidth.Text);
 				m_CurrentElement.Height = Double.Parse(txtHeight.Text);
 				m_CurrentElement.Width = Double.Parse(txtWidth.Text);
 				m_CurrentElement.Length = Double.Parse(txtLength.Text);
@@ -643,7 +665,10 @@ namespace Fuelles
 			// Load new values
 			m_CurrentElement = (FuellesConfigElement)(((ComboBox)sender).SelectedItem);
 
-			txtFoldWidth.Text = m_CurrentElement.FoldWidth.ToString();
+            cambialistinv(m_CurrentElement.Inversiones.ToString());
+            Actualiza_Click(sender, e);
+
+            txtFoldWidth.Text = m_CurrentElement.FoldWidth.ToString();
 			txtHeight.Text = m_CurrentElement.Height.ToString();
 			txtWidth.Text = m_CurrentElement.Width.ToString();
 			txtLength.Text = m_CurrentElement.Length.ToString();
@@ -654,7 +679,7 @@ namespace Fuelles
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StoreItems();
-			((FuelleConfig)m_Config.Sections["FuelleConfig"]).SelectedItem = cboConfig.SelectedItem.ToString();
+			((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).SelectedItem = cboConfig.SelectedItem.ToString();
 			m_Config.Save(ConfigurationSaveMode.Full);
 		}
 
@@ -663,7 +688,7 @@ namespace Fuelles
 			NewName frm = new NewName();
 			if ( frm.ShowDialog(this) == DialogResult.OK )
 			{
-				FuellesCollection col = ((FuelleConfig)m_Config.Sections["FormaFuelle"]).Bellows;
+				FuellesCollection col = ((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).Fuelless;
 				if (col[frm.NameText] != null)
 				{
 					MessageBox.Show(this,"Configuration '" + frm.NameText + "' already exists");

@@ -30,13 +30,13 @@ namespace Fuelles
 		{
 		}
 
-		[ConfigurationProperty("Bellows", IsDefaultCollection = false)]
+		[ConfigurationProperty("Fuelles", IsDefaultCollection = false)]
 		[ConfigurationCollection(typeof(FuellesCollection))]
-		public FuellesCollection Bellows
+		public FuellesCollection Fuelless
 		{
 			get
 			{
-				FuellesCollection col = (FuellesCollection)base["Bellows"];
+				FuellesCollection col = (FuellesCollection)base["Fuelles"];
 				return col;
 			}
 		}
