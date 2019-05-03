@@ -181,7 +181,8 @@ namespace Fuelles
             }
 
             oDottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
-            for (int ix=0;ix < listinv.Items.Count-1 ; ix++) // el cero final no
+            //quebradas verticales duplico el bucle para no interrupir trazados
+            for (int ix=0;ix < listinv.Items.Count-1 ; ix++) // izquierdo por inversiones pero el cero final no
             {
                 impar = ix % 2;
                 lapiz = (impar == 0) ?  oSolidPen : oDottedPen;
@@ -192,15 +193,30 @@ namespace Fuelles
                     impar = plieg % 2;
                     y = (double)plieg * dblFoldWidth;
                     dx = dblFoldWidth / Math.Tan(angradian);
-
                     (p1x,p1y,p2x,p2y)=Encaja( dblSideHeight + (impar - 1) * dx, y, dblSideHeight - dx * impar, y + dblFoldWidth);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y,(float)p2x,(float)p2y);
+                }
+            }
+            
+            for (int ix = 0; ix < listinv.Items.Count - 1; ix++) // derecho por inversiones pero el cero final no
+            {
+                impar = ix % 2;
+                lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
+                for (int plieg = 0; plieg < nFolds; plieg++)
+                {
+                    impar = plieg % 2;
+                    y = (double)plieg * dblFoldWidth;
+                    dx = dblFoldWidth / Math.Tan(angradian);
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
-            }
+            } 
+            // Horizontales
+
         } /*PintaFuelles*/
-            private void DrawBellows( Graphics g )
+        private void DrawBellows( Graphics g )
 		{
 			double dblFoldWidth;
 			double dblHeight;
