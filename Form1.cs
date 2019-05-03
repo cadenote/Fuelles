@@ -140,9 +140,9 @@ namespace Fuelles
             double dblFoldWidth;
             double dblHeight;
             double dblWidth;
-            double angradian;
-            double y,dx;
-            double p1x, p1y, p2x, p2y;
+            double angradian,angradian0;
+            double y,dx,dvx;
+            double p1x, p1y, p2x, p2y,v1x,v2x;
             int impar;
             byte que = 0;
 
@@ -214,29 +214,55 @@ namespace Fuelles
                 }
             }
             // Horizontales
+            angradian0 = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString(), CultureInfo.GetCultureInfo("en-GB"));//primera inversion
+            dx = dblFoldWidth / Math.Tan(angradian0);
+            int interno = 1;
             for (int plieg = 1; plieg < nFolds; plieg++)
             {
+                interno = plieg % 2;
                 y = (double)plieg * dblFoldWidth;
-                for (int ix = 0; ix < listinv.Items.Count - 1; ix++) //Izquierdos
-                {
-                    impar = ix % 2;
-                    lapiz = (impar == 0) ? oSolidPen : oDottedPen;
-                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
-
-                }
-                impar = plieg % 2; //Central
-                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString(), CultureInfo.GetCultureInfo("en-GB"));//primera inversion
-                lapiz = (impar != 0) ? oSolidPen : oDottedPen;
-                dx = dblFoldWidth / Math.Tan(angradian);
-                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (impar-1) * dx, y, nuevorig - dx * (impar-1), y);
+                v1x = 0;
+                if (interno==0) //Izquierdos
+                    for (int ix = listinv.Items.Count - 2; ix <0 ; ix--) 
+                    {
+                        impar = (ix+ listinv.Items.Count) % 2;
+                        lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        dvx = dblFoldWidth / Math.Tan(angradian);
+                        v2x = dblSideHeight - dvx;
+                        (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                        g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                        v1x = v2x;
+                    }
+                else
+                    {
+                    lapiz = (listinv.Items.Count%2 == 1) ? oSolidPen : oDottedPen;
+                    (p1x, p1y, p2x, p2y) = Encaja(0,y,dblSideHeight,y);
+                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    }
+                //Central
+                lapiz = (interno != 0) ? oSolidPen : oDottedPen;
+                v1x = nuevorig - dx * (interno - 1);
+                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (interno-1) * dx, y,v1x, y);
                 g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
-                for (int ix = 0; ix < listinv.Items.Count - 1; ix++) //Derechos
+                if (interno == 0)//Derechos
+                    for (int ix = 1; ix < listinv.Items.Count - 1; ix++)
+                    {
+                        impar = (ix + listinv.Items.Count) % 2;
+                        lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        dvx = dblFoldWidth / Math.Tan(angradian);
+                        v2x = nuevorig + dvx;
+                        (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                        g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                        v1x = v2x;
+                    }
+                else
                 {
-                    impar = ix % 2;
-                    lapiz = (impar == 0) ? oSolidPen : oDottedPen;
-                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
-
-                }
+                    lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
+                    (p1x, p1y, p2x, p2y) = Encaja(nuevorig, y, dblPaperWidth, y);
+                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    }
 
             }
         } /*PintaFuelles*/
