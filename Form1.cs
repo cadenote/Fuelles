@@ -187,7 +187,7 @@ namespace Fuelles
                 impar = ix % 2;
                 lapiz = (impar == 0) ?  oSolidPen : oDottedPen;
 
-                angradian = Math.PI/180.0*float.Parse(listinv.Items[ix].ToString());
+                angradian = Math.PI/180.0*float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg=0; plieg< nFolds; plieg++)
                 {
                     impar = plieg % 2;
@@ -203,7 +203,7 @@ namespace Fuelles
                 impar = ix % 2;
                 lapiz = (impar == 0) ? oSolidPen : oDottedPen;
 
-                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg = 0; plieg < nFolds; plieg++)
                 {
                     impar = plieg % 2;
@@ -221,11 +221,11 @@ namespace Fuelles
                 {
                     impar = ix % 2;
                     lapiz = (impar == 0) ? oSolidPen : oDottedPen;
-                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
+                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
 
                 }
                 impar = plieg % 2; //Central
-                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString());//primera inversion
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString(), CultureInfo.GetCultureInfo("en-GB"));//primera inversion
                 lapiz = (impar != 0) ? oSolidPen : oDottedPen;
                 dx = dblFoldWidth / Math.Tan(angradian);
                 (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (impar-1) * dx, y, nuevorig - dx * (impar-1), y);
@@ -234,7 +234,7 @@ namespace Fuelles
                 {
                     impar = ix % 2;
                     lapiz = (impar == 0) ? oSolidPen : oDottedPen;
-                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
+                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
 
                 }
 
@@ -771,19 +771,18 @@ namespace Fuelles
 			StoreItems();
 			// Load new values
 			m_CurrentElement = (FuellesConfigElement)(((ComboBox)sender).SelectedItem);
-
-            cambialistinv(m_CurrentElement.Inversiones.ToString());
-            Actualiza_Click(sender, e);
-
             txtFoldWidth.Text = m_CurrentElement.FoldWidth.ToString();
 			txtHeight.Text = m_CurrentElement.Height.ToString();
 			txtWidth.Text = m_CurrentElement.Width.ToString();
 			txtLength.Text = m_CurrentElement.Length.ToString();
 			txtMountFolds.Text = m_CurrentElement.MountFolds.ToString();
 			chkAlternateFolds.Checked = m_CurrentElement.AlternateFolds;
-		}
+            cambialistinv(m_CurrentElement.Inversiones.ToString());
+            Actualiza_Click(sender, e);
 
-		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StoreItems();
 			((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).SelectedItem = cboConfig.SelectedItem.ToString();
@@ -896,7 +895,7 @@ namespace Fuelles
                 listinv.Items.Insert(indice, textBox1.Text);
             }
             //Si la lista no termina en cero ponselo
-            if (float.Parse(listinv.Items[quepasa-1].ToString()) != 0f)
+            if (float.Parse(listinv.Items[quepasa-1].ToString(), CultureInfo.GetCultureInfo("en-GB")) != 0f)
                 {
                 listinv.Items.Insert(quepasa++, "0.0");
                 
@@ -904,7 +903,7 @@ namespace Fuelles
             //Si en la lista hay un cero intermedio borrala
             for (ix=0; ix< quepasa; ix++)
                 {
-                if (float.Parse(listinv.Items[ix].ToString()) == 0f)
+                if (float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB")) == 0f)
                     break;
                 }
             while (--quepasa > ix)
