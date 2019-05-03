@@ -395,12 +395,12 @@ namespace Fuelles
             this.pliegues.CheckOnClick = true;
             this.pliegues.FormattingEnabled = true;
             this.pliegues.Items.AddRange(new object[] {
-            "Positivo",
-            "Negativo"});
-            this.pliegues.Location = new System.Drawing.Point(711, 138);
+            "Picos",
+            "Valles"});
+            this.pliegues.Location = new System.Drawing.Point(733, 138);
             this.pliegues.MinimumSize = new System.Drawing.Size(4, 50);
             this.pliegues.Name = "pliegues";
-            this.pliegues.Size = new System.Drawing.Size(120, 38);
+            this.pliegues.Size = new System.Drawing.Size(98, 38);
             this.pliegues.TabIndex = 21;
             this.pliegues.SelectedIndexChanged += new System.EventHandler(this.Pliegues_SelectedIndexChanged);
             // 

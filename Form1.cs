@@ -30,119 +30,185 @@ using System.Globalization;
 namespace Fuelles
 {
     public partial class Form1 : Form
-	{
-		double dblPaperWidth;
+    {
+        double dblPaperWidth;
+        double dblPaperHeight;
         double dblFoldWidth;
         float gradbeta;
         int nFolds;
-		int nPage;
-		int nPages;
-		Configuration m_Config;
-		FuellesConfigElement m_CurrentElement;
-		bool m_bCalculationError;
+        int nPage;
+        int nPages;
+        Configuration m_Config;
+        FuellesConfigElement m_CurrentElement;
+        bool m_bCalculationError;
         GenerateGCode dlg;
-        float dvC,angD ,xC ,yC;
+        float dvC, angD, xC, yC;
 
 
         public Form1()
-		{
-			m_bCalculationError = true;
+        {
+            m_bCalculationError = true;
 
             InitializeComponent();
-            listinv.Items.AddRange(new object[] {"72.57","27.57","0"});
+            listinv.Items.AddRange(new object[] { "72.57", "27.57", "0" });
             //listinv.Items.AddRange(new object[] { "60", "30","0" });
             m_Config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-			FuelleConfig cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
-			if (cfg == null)
-			{
-				cfg = new FuelleConfig();
-				m_Config.Sections.Add("ParamdeFuelle", cfg);
-				cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
-				cfg.SectionInformation.ForceSave = true;
-			}
+            FuelleConfig cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
+            if (cfg == null)
+            {
+                cfg = new FuelleConfig();
+                m_Config.Sections.Add("ParamdeFuelle", cfg);
+                cfg = (FuelleConfig)m_Config.Sections["ParamdeFuelle"];
+                cfg.SectionInformation.ForceSave = true;
+            }
 
-			foreach (FuellesConfigElement b in cfg.Fuelless)
-			{
-				cboConfig.Items.Add(b);
-			}
-			int nItem = cboConfig.FindStringExact( ((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).SelectedItem );
+            foreach (FuellesConfigElement b in cfg.Fuelless)
+            {
+                cboConfig.Items.Add(b);
+            }
+            int nItem = cboConfig.FindStringExact(((FuelleConfig)m_Config.Sections["ParamdeFuelle"]).SelectedItem);
             if (nItem >= 0)
                 cboConfig.SelectedIndex = nItem;
             else
             {
-                if ( cboConfig.Items.Count > 0 )
+                if (cboConfig.Items.Count > 0)
                     cboConfig.SelectedIndex = 0;
             }
 
-			printDocument1.PrinterSettings = printDialog1.PrinterSettings;
-            pliegues.SetItemChecked(0, true);
-            pliegues.SetItemChecked(1, true);
+            printDocument1.PrinterSettings = printDialog1.PrinterSettings;
+            pliegues.SetItemChecked(0, true); //Ver picos
+            pliegues.SetItemChecked(1, true); //Ver valles
             actualizapared();
             UpdateCalculations();
-		}
+        }
 
-		public bool UpdateCalculations()
-		{
-			bool bRet = false;
-			try
-			{
-				double dblLength = double.Parse(txtLength.Text);
-				int nMountFolds = int.Parse(txtMountFolds.Text);
-				double dblExtensionAngle = 120.0;
-				double dblWidth = double.Parse(txtWidth.Text);
-                double dblHeight = double.Parse(txtHeight.Text);
+        public bool UpdateCalculations()
+        {
+            bool bRet = false;
+            try
+            {
+                double dblLength = double.Parse(txtLength.Text);//longitud a cubrir
+                int nMountFolds = int.Parse(txtMountFolds.Text);//pliegue de montaje
+                double dblExtensionAngle = 120.0;
+                double dblWidth = double.Parse(txtWidth.Text);//ancho interior requrido
+                double dblHeight = double.Parse(txtHeight.Text);//alto interior
 
-                dblFoldWidth = double.Parse(txtFoldWidth.Text);
+                dblFoldWidth = double.Parse(txtFoldWidth.Text);//anchura pliegue
 
                 // Compute the number of folds 
                 // = Length / (FoldWidth*sin(120))
                 double dblFolds = dblLength / (dblFoldWidth * Math.Sin(dblExtensionAngle / 2 / 180 * Math.PI));
-				nFolds = (int)(dblFolds + 1.0);
+                nFolds = (int)(dblFolds + 1.0);
 
-				// Then add mount folds
-				nFolds += nMountFolds; //va bien si nMountFolds es par
+                // Then add mount folds
+                nFolds += nMountFolds; //va bien si nMountFolds es par
 
                 // Round up to even number.
                 if ((nFolds & 1) == 1)
                     nFolds++;
 
                 // Use width and height to calculate fold dimensions
-                double dblTopWidth = dblWidth + 2 * dblFoldWidth;
-				double dblSideHeight = dblHeight + dblFoldWidth;
+                double dblTopWidth = dblWidth + 2 * dblFoldWidth;//ancho exterior necesario si pliegues hacia dentro
+                double dblSideHeight = dblHeight + dblFoldWidth;//alto exterior necesario si pliegues hacia dentro
 
-				dblPaperWidth = dblTopWidth + 2 * dblSideHeight;
+                dblPaperWidth = dblTopWidth + 2 * dblSideHeight;//ancho de papel
 
-				lblPageWidth.Text = dblPaperWidth.ToString() + " mm";
-				lblPageHeight.Text = ((double)nFolds * dblFoldWidth).ToString() + "mm";
+                lblPageWidth.Text = dblPaperWidth.ToString() + " mm";
+                lblPageHeight.Text = ((double)nFolds * dblFoldWidth).ToString() + "mm";
 
 
-				bRet = true;
-				m_bCalculationError = false;
-			}
-			catch (Exception )
-			{
-				bRet = false;
-				m_bCalculationError = true;
-			}
+                bRet = true;
+                m_bCalculationError = false;
+            }
+            catch (Exception)
+            {
+                bRet = false;
+                m_bCalculationError = true;
+            }
 
-			panel1.Invalidate();
-			return bRet;
-		}
-		private void panel1_Paint(object sender, PaintEventArgs e)
-		{
-			DrawBellows(e.Graphics);
-		}
+            panel1.Invalidate();
+            return bRet;
+        }
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            //DrawBellows(e.Graphics);
+            PintaFuelles(e.Graphics);
+        }
+        private void PintaFuelles(Graphics g)
+        {
+            double dblFoldWidth;
+            double dblHeight;
+            double dblWidth;
+            double angradian;
+            double y,dx;
+            double p1x, p1y, p2x, p2y;
+            int impar;
+            byte que = 0;
 
-		private void DrawBellows( Graphics g )
+            if (pliegues.CheckedItems.Count > 0)
+            {
+                if (pliegues.CheckedItems.Contains("Picos") == true) que = 2;
+                if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
+            }
+            if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
+                return;
+
+            if (!double.TryParse(txtHeight.Text, out dblHeight))
+                return;
+            if (!double.TryParse(txtWidth.Text, out dblWidth))
+                return;
+
+            double dblTopWidth = dblWidth + 2 * dblFoldWidth;//ancho exterior necesario si pliegues hacia dentro
+            double dblSideHeight = dblHeight + dblFoldWidth;//alto exterior necesario si pliegues hacia dentro
+
+            dblPaperHeight = (double)nFolds * dblFoldWidth;
+
+            double nuevorig = dblTopWidth + dblSideHeight;
+
+            Pen oSolidPen;
+            Pen oDottedPen;
+            Pen lapiz;
+            if (!m_bCalculationError)
+            {
+                oSolidPen = new Pen(Color.Black, 0.25f);
+                oDottedPen = new Pen(Color.Red, 0.25f);
+            }
+            else
+            {
+                oSolidPen = new Pen(Color.Green, 0.25f);
+                oDottedPen = new Pen(Color.Cyan, 0.25f);
+            }
+
+            oDottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
+            for (int ix=0;ix < listinv.Items.Count-1 ; ix++) // el cero final no
+            {
+                impar = ix % 2;
+                lapiz = (impar == 0) ?  oSolidPen : oDottedPen;
+
+                angradian = Math.PI/180.0*float.Parse(listinv.Items[ix].ToString());
+                for (int plieg=0; plieg< nFolds; plieg++)
+                {
+                    impar = plieg % 2;
+                    y = (double)plieg * dblFoldWidth;
+                    dx = dblFoldWidth / Math.Tan(angradian);
+
+                    (p1x,p1y,p2x,p2y)=Encaja( dblSideHeight + (impar - 1) * dx, y, dblSideHeight - dx * impar, y + dblFoldWidth);
+                    g.DrawLine(lapiz, (float)p1x, (float)p1y,(float)p2x,(float)p2y);
+                    (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
+                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                }
+            }
+        } /*PintaFuelles*/
+            private void DrawBellows( Graphics g )
 		{
 			double dblFoldWidth;
 			double dblHeight;
             byte que = 0;
             if (pliegues.CheckedItems.Count > 0)
             {
-                if (pliegues.CheckedItems.Contains("Positivo") == true ) que = 2;
-                if (pliegues.CheckedItems.Contains("Negativo") == true) que += 1;
+                if (pliegues.CheckedItems.Contains("Picos") == true ) que = 2;
+                if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
             }
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return;
@@ -150,7 +216,7 @@ namespace Fuelles
             if (!double.TryParse(txtHeight.Text, out dblHeight))
                 return;
 
-            double dblPaperHeight = (double)nFolds * dblFoldWidth;
+            dblPaperHeight = (double)nFolds * dblFoldWidth;
 
             Pen oSolidPen;
 			Pen oDottedPen;
@@ -277,7 +343,7 @@ namespace Fuelles
             if (!double.TryParse(txtHeight.Text, out dblHeight))
                 return(Preambulo);
 
-            double dblPaperHeight = (double)nFolds * dblFoldWidth;
+            dblPaperHeight = (double)nFolds * dblFoldWidth;
 
             Pen oSolidPen;
             Pen oDottedPen;
@@ -491,7 +557,7 @@ namespace Fuelles
             if (!double.TryParse(txtHeight.Text, out dblHeight))
                 return ("Error en Alto");
 
-            double dblPaperHeight = (double)nFolds * dblFoldWidth;
+            dblPaperHeight = (double)nFolds * dblFoldWidth;
 
             double a1 = 72.57 / 180.0 * Math.PI;
             double a2 = 27.57 / 180.0 * Math.PI;
@@ -608,7 +674,7 @@ namespace Fuelles
 				dblPageHeight -= 10;
 
 				double dblFoldWidth = double.Parse(txtFoldWidth.Text);
-				double dblPaperHeight = (double)nFolds * dblFoldWidth;
+				dblPaperHeight = (double)nFolds * dblFoldWidth;
 
 				// Parts vertically.
 				nPartsVertical = (int)(dblPaperHeight / dblPageHeight + 1.0);
@@ -625,7 +691,8 @@ namespace Fuelles
 			e.Graphics.PageUnit = GraphicsUnit.Millimeter;
 			e.Graphics.TranslateTransform(-(float)nPageX * (float)dblPageWidth, -(float)nPageY * (float)dblPageHeight);
 
-			DrawBellows(e.Graphics);
+            //DrawBellows(e.Graphics);
+            PintaFuelles(e.Graphics);
 			if (nPage+1 < nPages )
 			{
 				nPage++;
@@ -806,6 +873,7 @@ namespace Fuelles
                 }
             //actualiza angulo pared()
             actualizapared();
+            UpdateCalculations();
         }
 
         private void txtFoldWidth_Leave(object sender, EventArgs e)

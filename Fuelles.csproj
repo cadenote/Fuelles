@@ -61,6 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encajar.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FuelleConfig.cs" />
     <Compile Include="FuellesCollection.cs" />
     <Compile Include="FuellesConfigElement.cs" />
