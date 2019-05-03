@@ -212,9 +212,33 @@ namespace Fuelles
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
-            } 
+            }
             // Horizontales
+            for (int plieg = 1; plieg < nFolds; plieg++)
+            {
+                y = (double)plieg * dblFoldWidth;
+                for (int ix = 0; ix < listinv.Items.Count - 1; ix++) //Izquierdos
+                {
+                    impar = ix % 2;
+                    lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
 
+                }
+                impar = plieg % 2; //Central
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString());//primera inversion
+                lapiz = (impar != 0) ? oSolidPen : oDottedPen;
+                dx = dblFoldWidth / Math.Tan(angradian);
+                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (impar-1) * dx, y, nuevorig - dx * (impar-1), y);
+                g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                for (int ix = 0; ix < listinv.Items.Count - 1; ix++) //Derechos
+                {
+                    impar = ix % 2;
+                    lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                    angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString());
+
+                }
+
+            }
         } /*PintaFuelles*/
         private void DrawBellows( Graphics g )
 		{

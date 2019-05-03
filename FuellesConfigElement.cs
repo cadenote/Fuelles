@@ -44,7 +44,7 @@ namespace Fuelles
 		}
 
 		
-		[ConfigurationProperty("Inversiones", DefaultValue = "72.57, 27.57, 0")]
+		[ConfigurationProperty("Inversiones", DefaultValue = "72.57,27.57,0.0")]
 		//[IntegerValidator(MinValue = 1, MaxValue = 4)]
 		public string Inversiones
 		{
