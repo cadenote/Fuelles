@@ -216,48 +216,54 @@ namespace Fuelles
             // Horizontales
             angradian0 = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString(), CultureInfo.GetCultureInfo("en-GB"));//primera inversion
             dx = dblFoldWidth / Math.Tan(angradian0);
-            int interno = 1;
+            int externo;
             for (int plieg = 1; plieg < nFolds; plieg++)
             {
-                interno = plieg % 2;
+                externo = plieg % 2; //Los externos son los impares
                 y = (double)plieg * dblFoldWidth;
                 v1x = 0;
-                if (interno==0) //Izquierdos
-                    for (int ix = listinv.Items.Count - 2; ix <0 ; ix--) 
+                if (externo == 0) //Izquierdos internos
                     {
-                        impar = (ix+ listinv.Items.Count) % 2;
-                        lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                    for (int ix = listinv.Items.Count - 2; ix >= 0; ix--)
+                        {
+                        impar = ix  % 2;
+                        lapiz = (impar == 1) ? oDottedPen : oSolidPen;
                         angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
                         v2x = dblSideHeight - dvx;
                         (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                        g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                        try { g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
+                        catch { }
                         v1x = v2x;
+                        }
                     }
-                else
-                    {
-                    lapiz = (listinv.Items.Count%2 == 1) ? oSolidPen : oDottedPen;
-                    (p1x, p1y, p2x, p2y) = Encaja(0,y,dblSideHeight,y);
+                else //Izquierdos externos
+                {
+                    lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
+                    (p1x, p1y, p2x, p2y) = Encaja(0, y, dblSideHeight, y);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                     }
                 //Central
-                lapiz = (interno != 0) ? oSolidPen : oDottedPen;
-                v1x = nuevorig - dx * (interno - 1);
-                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (interno-1) * dx, y,v1x, y);
+                lapiz = (externo == 1) ? oSolidPen : oDottedPen; 
+                v1x = nuevorig - dx * (externo - 1);
+                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (externo -1) * dx, y, v1x, y);
                 g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
-                if (interno == 0)//Derechos
-                    for (int ix = 1; ix < listinv.Items.Count - 1; ix++)
+                if (externo == 0)//Derechos Internos
+                {
+                    for (int ix = 1; ix < listinv.Items.Count ; ix++)
                     {
-                        impar = (ix + listinv.Items.Count) % 2;
-                        lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                        impar = ix % 2;
+                        lapiz = (impar == 0) ? oDottedPen : oSolidPen;
                         angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
                         v2x = nuevorig + dvx;
                         (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                        g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
-                        v1x = v2x;
+                        try { g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
+                        catch { }
+                        v1x = v2x; if (v1x > dblPaperWidth) v1x = dblPaperWidth;
                     }
-                else
+                }
+                else //Derechos Externos
                 {
                     lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig, y, dblPaperWidth, y);
