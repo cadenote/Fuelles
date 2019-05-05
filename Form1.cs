@@ -1,6 +1,7 @@
 // Fuelles is a forked work of Bellows Program obtained from www.franksworkshop.com Copyright (C) 2008, Frank Tkalcevic.
 // Bellows - bellows fold pattern printer, based on US Patent No 6,054,194,
 // Mathematically optimized family of ultra low distortion bellow fold patterns, Nathan R. Kane.
+// Also the project includes Cohen–Sutherland clipping algorithm extracted from wikipedia
 
 //Fuelles Copyright (C) 2019 , Jose Jimenez <cadenote@hotmail.com>
 
@@ -141,10 +142,11 @@ namespace Fuelles
             double dblHeight;
             double dblWidth;
             double angradian,angradian0;
-            double y,dx,dvx;
+            double y,dx,d0x,dvx;
             double p1x, p1y, p2x, p2y,v1x,v2x;
-            int impar;
+            int impar,tam,a,prueba;
             byte que = 0;
+            bool toca;
 
             if (pliegues.CheckedItems.Count > 0)
             {
@@ -161,10 +163,9 @@ namespace Fuelles
 
             double dblTopWidth = dblWidth + 2 * dblFoldWidth;//ancho exterior necesario si pliegues hacia dentro
             double dblSideHeight = dblHeight + dblFoldWidth;//alto exterior necesario si pliegues hacia dentro
-
             dblPaperHeight = (double)nFolds * dblFoldWidth;
-
             double nuevorig = dblTopWidth + dblSideHeight;
+            bool bAlternate = chkAlternateFolds.Checked;// alternar
 
             Pen oSolidPen;
             Pen oDottedPen;
@@ -181,6 +182,10 @@ namespace Fuelles
             }
 
             oDottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
+
+            g.DrawRectangle(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);// marco
+            g.DrawLine(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);//linea de seguimiento
+
             //quebradas verticales duplico el bucle para no interrupir trazados
             for (int ix=0;ix < listinv.Items.Count-1 ; ix++) // izquierdo por inversiones pero el cero final no
             {
@@ -193,6 +198,8 @@ namespace Fuelles
                     impar = plieg % 2;
                     y = (double)plieg * dblFoldWidth;
                     dx = dblFoldWidth / Math.Tan(angradian);
+                    toca = ((plieg+1) %4 ==0 | (plieg % 4) == 0);
+                    if (bAlternate & toca) dx = -dx;
                     (p1x,p1y,p2x,p2y)=Encaja( dblSideHeight + (impar - 1) * dx, y, dblSideHeight - dx * impar, y + dblFoldWidth);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y,(float)p2x,(float)p2y);
                 }
@@ -202,34 +209,44 @@ namespace Fuelles
             {
                 impar = ix % 2;
                 lapiz = (impar == 0) ? oSolidPen : oDottedPen;
-
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg = 0; plieg < nFolds; plieg++)
                 {
                     impar = plieg % 2;
                     y = (double)plieg * dblFoldWidth;
                     dx = dblFoldWidth / Math.Tan(angradian);
+                    toca = ((plieg + 1) % 4 == 0 | (plieg % 4) == 0);
+                    if (bAlternate & toca) dx = -dx;
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
             }
             // Horizontales
             angradian0 = Math.PI / 180.0 * float.Parse(listinv.Items[0].ToString(), CultureInfo.GetCultureInfo("en-GB"));//primera inversion
-            dx = dblFoldWidth / Math.Tan(angradian0);
+            d0x = dblFoldWidth / Math.Tan(angradian0);
             int externo;
             for (int plieg = 1; plieg < nFolds; plieg++)
             {
+                toca = (plieg % 4 == 0 & bAlternate);
                 externo = plieg % 2; //Los externos son los impares
                 y = (double)plieg * dblFoldWidth;
                 v1x = 0;
                 if (externo == 0) //Izquierdos internos
                     {
-                    for (int ix = listinv.Items.Count - 2; ix >= 0; ix--)
+                    //if (!toca)
+                    //  { prim = listinv.Items.Count - 2; ult = 0; paso = -1;}
+                    //else { prim = 0; ult = listinv.Items.Count - 2; paso = 1; }
+                    if (toca) {
+                    }
+                    tam = listinv.Items.Count - 1;
+                    for (int ix = tam-1; ix >=0; ix--)
                         {
                         impar = ix  % 2;
                         lapiz = (impar == 1) ? oDottedPen : oSolidPen;
-                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        prueba = ix - (a= toca ? 1 : 0) * (tam-1);
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
+                        if (toca) dvx = -dvx;
                         v2x = dblSideHeight - dvx;
                         (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
                         try { g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
@@ -245,8 +262,8 @@ namespace Fuelles
                     }
                 //Central
                 lapiz = (externo == 1) ? oSolidPen : oDottedPen; 
-                v1x = nuevorig - dx * (externo - 1);
-                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (externo -1) * dx, y, v1x, y);
+                v1x = nuevorig - d0x * (externo - 1); //Para iniciar despues los Derechos internos
+                (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (externo -1) * d0x, y, v1x, y);
                 g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 if (externo == 0)//Derechos Internos
                 {
