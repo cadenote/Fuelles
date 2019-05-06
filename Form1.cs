@@ -86,6 +86,7 @@ namespace Fuelles
 
         public bool UpdateCalculations()
         {
+            double angradian, dx,cabe;
             bool bRet = false;
             try
             {
@@ -117,7 +118,15 @@ namespace Fuelles
 
                 lblPageWidth.Text = dblPaperWidth.ToString() + " mm";
                 lblPageHeight.Text = ((double)nFolds * dblFoldWidth).ToString() + "mm";
-
+                if(chkAlternateFolds.Checked) // comprueba si pliegues interiores caben
+                {
+                    for(int i=0;i< listinv.Items.Count-1;i++)
+                    {
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[i].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        dx = dblFoldWidth / Math.Tan(angradian);
+                        cabe= 1/((dblTopWidth/2 >  dx) ? 1:0);
+                    }
+                }
 
                 bRet = true;
                 m_bCalculationError = false;
@@ -233,11 +242,6 @@ namespace Fuelles
                 v1x = 0;
                 if (externo == 0) //Izquierdos internos
                     {
-                    //if (!toca)
-                    //  { prim = listinv.Items.Count - 2; ult = 0; paso = -1;}
-                    //else { prim = 0; ult = listinv.Items.Count - 2; paso = 1; }
-                    if (toca) {
-                    }
                     tam = listinv.Items.Count - 1;
                     for (int ix = tam-1; ix >=0; ix--)
                         {
@@ -264,11 +268,6 @@ namespace Fuelles
                 //Central
                 lapiz = (externo == 1) ? oSolidPen : oDottedPen;
                 tam = listinv.Items.Count - 1;
-                //prueba = (a = toca ? 1 : 0) * (tam - 1); //Para el ultimo angulo que es ix=0
-                //angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
-                //dvx = dblFoldWidth / Math.Tan(angradian);
-                //if (toca) dvx = -dvx;
-                //v1x = dblSideHeight + (externo - 1) * dvx;
                 prueba = (a = toca ? 1 : 0) * (tam-1);
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 dvx = dblFoldWidth / Math.Tan(angradian);
