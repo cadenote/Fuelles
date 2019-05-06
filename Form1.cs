@@ -259,29 +259,31 @@ namespace Fuelles
                     lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
                     (p1x, p1y, p2x, p2y) = Encaja(0, y, dblSideHeight, y);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    v1x = dblSideHeight;
                     }
                 //Central
                 lapiz = (externo == 1) ? oSolidPen : oDottedPen;
                 tam = listinv.Items.Count - 1;
-                prueba = (a = toca ? 1 : 0) * (tam - 1); //Para el ultimo angulo que es ix=0
-                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
-                dvx = dblFoldWidth / Math.Tan(angradian);
-                v1x = dblSideHeight + (externo - 1) * dvx;
-                prueba = (a = toca ? 1 : 0) * tam;
+                //prueba = (a = toca ? 1 : 0) * (tam - 1); //Para el ultimo angulo que es ix=0
+                //angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                //dvx = dblFoldWidth / Math.Tan(angradian);
+                //if (toca) dvx = -dvx;
+                //v1x = dblSideHeight + (externo - 1) * dvx;
+                prueba = (a = toca ? 1 : 0) * (tam-1);
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 dvx = dblFoldWidth / Math.Tan(angradian);
                 if (toca) dvx = -dvx;
                 v2x = nuevorig - dvx*(externo-1);
                 (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
                 g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
-
+                v1x = v2x;
                 if (externo == 0)//Derechos Internos
                 {
-                    for (int ix = 0; ix <= tam ; ix++) 
+                    for (int ix = 1; ix < tam ; ix++) 
                     {
                         impar = ix % 2;
                         lapiz = (impar == 0) ? oDottedPen : oSolidPen;
-                        prueba = ix - (a = toca ? 1 : 0) * tam;
+                        prueba = ix - (a = toca ? 1 : 0) * (tam-1);
                         angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
                         if (toca) dvx = -dvx;
@@ -291,13 +293,17 @@ namespace Fuelles
                         catch { }
                         v1x = v2x; if (v1x > dblPaperWidth) v1x = dblPaperWidth;
                     }
+                    lapiz = (listinv.Items.Count % 2 == 0) ? oSolidPen : oDottedPen;
+                    v2x = dblPaperWidth; //ultima derecha
+                    (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
                 else //Derechos Externos
                 {
                     lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig, y, dblPaperWidth, y);
                     g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
-                    }
+                }
 
             }
         } /*PintaFuelles*/
