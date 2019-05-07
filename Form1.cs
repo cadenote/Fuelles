@@ -35,7 +35,7 @@ namespace Fuelles
         double dblPaperWidth;
         double dblPaperHeight;
         double dblFoldWidth;
-        float gradbeta;
+        float[] gradbetas = new float[3] { 0,0,0 };
         int nFolds;
         int nPage;
         int nPages;
@@ -316,17 +316,21 @@ namespace Fuelles
         } /*PintaFuelles*/
         public String GenFuelles(byte queparte )
         {
-            String punteado = "\n(MSG,Oprime CONTINUA)\nM0\n";
-            String Preambulo = "G01 F100\n";
-            String Corolario = "G00 Z5 M2\n";
-            String[] cnclin = new String [3];
+            /*
+            Este procedimiento solo es valido anverso (2) o reverso (1) pero no ambos(3)
+            porque en el caso de ambos(3)las lineas picos y valles se generian de manera no consecutiva
+            y por tanto las gragbetas anteriores serian erroneas.
+            Esto se puede arreglar guardando esos datos por separado o llamando al procedimiento dos veces.
+            */
+            string espera = "\n(MSG,Oprime CONTINUA)\nM0\n";
+            string Preambulo = "G01 F100\n";
+            string Corolario = "G00 Z5 M2\n";
+            string[] cnclin = new string [3];
             if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
             cnclin[2] = Preambulo;
-            cnclin[1] = punteado;
             int trazo;
             double dblFoldWidth;
             double dblHeight;
-            gradbeta = 0.0f;
             double dblWidth;
             double angradian;
             double y, dx, dvx;
@@ -334,13 +338,14 @@ namespace Fuelles
             int impar, tam, a, prueba;
             byte que = queparte;
             bool toca;
+            if(que ==3) cnclin[1] = espera;
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
-                return(Preambulo);
+                return("Error en ancho de pliegue");
 
             if (!double.TryParse(txtHeight.Text, out dblHeight))
-                return(Corolario);
+                return("Error en Altura");
             if (!double.TryParse(txtWidth.Text, out dblWidth))
-                return(punteado);
+                return("Error en anchura");
 
             double dblTopWidth = dblWidth + 2 * dblFoldWidth;//ancho exterior necesario si pliegues hacia dentro
             double dblSideHeight = dblHeight + dblFoldWidth;//alto exterior necesario si pliegues hacia dentro
@@ -462,7 +467,8 @@ namespace Fuelles
                     if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
             }
-            cnclin[1] += Corolario;
+            if (que != 2) cnclin[1] += Corolario;
+            else cnclin[2] += Corolario;
             return (cnclin[2] + cnclin[1]);
         } /*GenFuelles*/
 
@@ -499,7 +505,7 @@ namespace Fuelles
             //Centra
             xxx1 -= xC; xxx2 -= xC;
             yyy1 -= yC; yyy2 -= yC;
-            if (dlg.Resorte.Checked) gradbeta = 0.0f; 
+            if (dlg.Resorte.Checked) gradbetas[tipo] = 0.0f; //Lo obligo al angulo del resorte
             //Rotamos el dibujo
             (float xx1, float yy1) = Rotn(xxx1, yyy1,angD);
             (float xx2, float yy2) = Rotn(xxx2, yyy2,angD);
@@ -517,16 +523,16 @@ namespace Fuelles
             if (dlg.gobierno.Checked)
                 {
                 Linea += ("A" + gradalfa.ToString("0.000", CultureInfo.GetCultureInfo("en-GB")) + '\n');
-                gradbeta = gradalfa;
+                gradbetas[tipo] = gradalfa;
                 }
             (float Dx, float Dy) = DespP(dvC, gradalfa);
-            (float dx, float dy) = DespP(dvC, gradbeta);
+            (float dx, float dy) = DespP(dvC, gradbetas[tipo]);
             Linea += ("X" + (xx1 + dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
             Linea += (" Y" + (yy1 + dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"))+ '\n');
             Linea += "G01 Z0\n";
             if (!dlg.gobierno.Checked)
                 {
-                if (gradalfa < gradbeta) { Linea += ("G3 X");}
+                if (gradalfa < gradbetas[tipo]) { Linea += ("G3 X");}
                 else { Linea += ("G2 X");}
                 Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
                 Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
@@ -535,7 +541,7 @@ namespace Fuelles
                 }
             Linea += ("G01 X" + (xx2 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
             Linea += (" Y" + (yy2 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")) + '\n');
-            gradbeta = gradalfa;
+            gradbetas[tipo] = gradalfa;
             return Linea;
         }
 
@@ -570,7 +576,6 @@ namespace Fuelles
             int discontinua = 1;
             double dblFoldWidth;
             double dblHeight;
-            gradbeta = 0.0f;
 
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return ("Error en Ancho");
