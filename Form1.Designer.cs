@@ -520,7 +520,7 @@ namespace Fuelles
 		private System.Windows.Forms.Label lblPageHeight;
         private System.Windows.Forms.Button btnGCode;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.CheckedListBox pliegues;
+        public System.Windows.Forms.CheckedListBox pliegues;
         private System.Windows.Forms.Label pared;
         private System.Windows.Forms.ListBox listinv;
         private System.Windows.Forms.TextBox textBox1;

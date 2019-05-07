@@ -53,6 +53,8 @@ namespace Fuelles
 
         private void BtnOK_Click(object sender, EventArgs e)
         {
+            string anves="";
+            string reves="";
             string textReaderText;
             System.IO.Stream myStream;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -61,18 +63,24 @@ namespace Fuelles
             saveFileDialog1.FilterIndex = 3;
             //saveFileDialog1.RestoreDirectory = true;
             //textReaderText=formulario.GenBellows(pinta.Graphics);
-            textReaderText = formulario.RayaFuelles();
-            byte[] array = Encoding.ASCII.GetBytes(textReaderText);
-            int longi = array.Length;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            //textReaderText = formulario.RayaFuelles();
+            if (formulario.pliegues.CheckedItems.Count > 0)
             {
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                if (formulario.pliegues.CheckedItems.Contains("Picos") == true) anves = formulario.GenFuelles(2);
+                if (formulario.pliegues.CheckedItems.Contains("Valles") == true) reves = formulario.GenFuelles(1);
+                textReaderText = anves + reves;
+                byte[] array = Encoding.ASCII.GetBytes(textReaderText);
+                int longi = array.Length;
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    myStream.Write(array, 0, longi);
-                    myStream.Close();
+                    if ((myStream = saveFileDialog1.OpenFile()) != null)
+                    {
+                        myStream.Write(array, 0, longi);
+                        myStream.Close();
+                    }
                 }
-                this.Close();
             }
+            this.Close();
         }
 
         private void CheckedListBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -88,5 +96,6 @@ namespace Fuelles
                 }
             else this.gobierno.Enabled = true;
         }
+
     }
 }

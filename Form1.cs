@@ -142,7 +142,6 @@ namespace Fuelles
         }
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            //DrawBellows(e.Graphics);
             PintaFuelles(e.Graphics);
         }
         private void PintaFuelles(Graphics g)
@@ -155,6 +154,7 @@ namespace Fuelles
             double p1x, p1y, p2x, p2y,v1x,v2x;
             int impar,tam,a,prueba;
             byte que = 0;
+            byte trazo;
             bool toca;
 
             if (pliegues.CheckedItems.Count > 0)
@@ -200,7 +200,7 @@ namespace Fuelles
             {
                 impar = ix % 2;
                 lapiz = (impar == 0) ?  oSolidPen : oDottedPen;
-
+                trazo = (impar==0) ? (byte) 2 : (byte) 1;
                 angradian = Math.PI/180.0*float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg=0; plieg< nFolds; plieg++)
                 {
@@ -210,7 +210,7 @@ namespace Fuelles
                     toca = ((plieg+1) %4 ==0 | (plieg % 4) == 0);
                     if (bAlternate & toca) dx = -dx;
                     (p1x,p1y,p2x,p2y)=Encaja( dblSideHeight + (impar - 1) * dx, y, dblSideHeight - dx * impar, y + dblFoldWidth);
-                    g.DrawLine(lapiz, (float)p1x, (float)p1y,(float)p2x,(float)p2y);
+                    if ((que & trazo) != 0 ) g.DrawLine(lapiz, (float)p1x, (float)p1y,(float)p2x,(float)p2y);
                 }
             }
             
@@ -218,6 +218,7 @@ namespace Fuelles
             {
                 impar = ix % 2;
                 lapiz = (impar == 0) ? oSolidPen : oDottedPen;
+                trazo = (impar == 0) ? (byte)2 : (byte)1;
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg = 0; plieg < nFolds; plieg++)
                 {
@@ -227,7 +228,7 @@ namespace Fuelles
                     toca = ((plieg + 1) % 4 == 0 | (plieg % 4) == 0);
                     if (bAlternate & toca) dx = -dx;
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
-                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
             }
             // Horizontales
@@ -247,13 +248,15 @@ namespace Fuelles
                         {
                         impar = ix  % 2;
                         lapiz = (impar == 1) ? oDottedPen : oSolidPen;
+                        trazo = (impar == 1) ? (byte)1 : (byte)2;
                         prueba = ix - (a= toca ? 1 : 0) * (tam-1);
                         angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
                         if (toca) dvx = -dvx;
                         v2x = dblSideHeight - dvx;
                         (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                        try { g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
+                        try {
+                            if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
                         catch { }
                         v1x = v2x;
                         }
@@ -261,12 +264,14 @@ namespace Fuelles
                 else //Izquierdos externos
                 {
                     lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
+                    trazo = (listinv.Items.Count % 2 == 1) ? (byte)2 : (byte)1;
                     (p1x, p1y, p2x, p2y) = Encaja(0, y, dblSideHeight, y);
-                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                     v1x = dblSideHeight;
                     }
                 //Central
                 lapiz = (externo == 1) ? oSolidPen : oDottedPen;
+                trazo = (externo == 1) ? (byte)2 : (byte)1;
                 tam = listinv.Items.Count - 1;
                 prueba = (a = toca ? 1 : 0) * (tam-1);
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
@@ -274,7 +279,7 @@ namespace Fuelles
                 if (toca) dvx = -dvx;
                 v2x = nuevorig - dvx*(externo-1);
                 (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 v1x = v2x;
                 if (externo == 0)//Derechos Internos
                 {
@@ -282,143 +287,184 @@ namespace Fuelles
                     {
                         impar = ix % 2;
                         lapiz = (impar == 0) ? oDottedPen : oSolidPen;
+                        trazo = (impar == 0) ? (byte)1 : (byte)2;
                         prueba = ix - (a = toca ? 1 : 0) * (tam-1);
                         angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                         dvx = dblFoldWidth / Math.Tan(angradian);
                         if (toca) dvx = -dvx;
                         v2x = nuevorig + dvx;
                         (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                        try { g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
+                        try { if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
                         catch { }
                         v1x = v2x; if (v1x > dblPaperWidth) v1x = dblPaperWidth;
                     }
                     lapiz = (listinv.Items.Count % 2 == 0) ? oSolidPen : oDottedPen;
+                    trazo = (listinv.Items.Count % 2 == 0) ? (byte)2 : (byte)1;
                     v2x = dblPaperWidth; //ultima derecha
                     (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
-                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
                 else //Derechos Externos
                 {
                     lapiz = (listinv.Items.Count % 2 == 1) ? oSolidPen : oDottedPen;
+                    trazo = (listinv.Items.Count % 2 == 1) ? (byte)2 : (byte)1;
                     (p1x, p1y, p2x, p2y) = Encaja(nuevorig, y, dblPaperWidth, y);
-                    g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    if ((que & trazo) != 0) g.DrawLine(lapiz, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
 
             }
         } /*PintaFuelles*/
-        private void DrawBellows( Graphics g )
-		{
-			double dblFoldWidth;
-			double dblHeight;
-            byte que = 0;
-            if (pliegues.CheckedItems.Count > 0)
-            {
-                if (pliegues.CheckedItems.Contains("Picos") == true ) que = 2;
-                if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
-            }
+        public String GenFuelles(byte queparte )
+        {
+            String punteado = "\n(MSG,Oprime CONTINUA)\nM0\n";
+            String Preambulo = "G01 F100\n";
+            String Corolario = "G00 Z5 M2\n";
+            String[] cnclin = new String [3];
+            if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
+            cnclin[2] = Preambulo;
+            cnclin[1] = punteado;
+            int trazo;
+            double dblFoldWidth;
+            double dblHeight;
+            gradbeta = 0.0f;
+            double dblWidth;
+            double angradian;
+            double y, dx, dvx;
+            double p1x, p1y, p2x, p2y, v1x, v2x;
+            int impar, tam, a, prueba;
+            byte que = queparte;
+            bool toca;
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
-                return;
+                return(Preambulo);
 
             if (!double.TryParse(txtHeight.Text, out dblHeight))
-                return;
+                return(Corolario);
+            if (!double.TryParse(txtWidth.Text, out dblWidth))
+                return(punteado);
 
+            double dblTopWidth = dblWidth + 2 * dblFoldWidth;//ancho exterior necesario si pliegues hacia dentro
+            double dblSideHeight = dblHeight + dblFoldWidth;//alto exterior necesario si pliegues hacia dentro
             dblPaperHeight = (double)nFolds * dblFoldWidth;
+            double nuevorig = dblTopWidth + dblSideHeight;
+            bool bAlternate = chkAlternateFolds.Checked;// alternar
 
-            Pen oSolidPen;
-			Pen oDottedPen;
-			if (!m_bCalculationError)
-			{
-				oSolidPen = new Pen(Color.Black, 0.25f);
-				oDottedPen = new Pen(Color.Red, 0.25f);
-			}
-			else
-			{
-				oSolidPen = new Pen(Color.Green, 0.25f);
-				oDottedPen = new Pen(Color.Cyan, 0.25f);
-			}
+            dvC = float.Parse(dlg.txtCutterOffset.Text, CultureInfo.GetCultureInfo("en-GB"));
+            angD = float.Parse(dlg.numericUpDown1.Text);
+            xC = float.Parse(dlg.CentroX.Text, CultureInfo.GetCultureInfo("en-GB"));
+            yC = float.Parse(dlg.CentroY.Text, CultureInfo.GetCultureInfo("en-GB"));
 
-			oDottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
-
-			double a1 = 72.57 / 180.0 * Math.PI;
-			double a2 = 27.57 / 180.0 * Math.PI;
-
-			double x1 = dblHeight + dblFoldWidth;
-			double x2 = dblPaperWidth - x1;
-
-			bool bAlternate = chkAlternateFolds.Checked;
-
-			g.DrawRectangle(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);// marco
-			g.DrawLine(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);//linea de seguimiento
-			for (int i = 0; i < nFolds; i += 2)
-			{
-				double dxa1 = dblFoldWidth / Math.Tan(a1);
-				double dxa2 = dblFoldWidth / Math.Tan(a2);
-
-				double y = (double)(i + 1) * dblFoldWidth;
-                if ((que & 2) == 2)
+            //quebradas verticales duplico el bucle para no interrupir trazados
+            for (int ix = 0; ix < listinv.Items.Count - 1; ix++) // izquierdo por inversiones pero el cero final no
+            {
+                impar = ix % 2;
+                trazo = (impar == 0) ? 2 : 1;
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                for (int plieg = 0; plieg < nFolds; plieg++)
                 {
-                    g.DrawLine(oSolidPen, 0, (float)y, (float)dblPaperWidth, (float)y);
-                    g.DrawLine(oSolidPen, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
-                    g.DrawLine(oSolidPen, (float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
+                    impar = plieg % 2;
+                    y = plieg * dblFoldWidth;
+                    dx = dblFoldWidth / Math.Tan(angradian);
+                    toca = ((plieg + 1) % 4 == 0 | (plieg % 4) == 0);
+                    if (bAlternate & toca) dx = -dx;
+                    (p1x, p1y, p2x, p2y) = Encaja(dblSideHeight + (impar - 1) * dx, y, dblSideHeight - dx * impar, y + dblFoldWidth);
+                    if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo,(float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
+            }
 
-                double dblAlt = 1.0;
-				if (bAlternate)
-					if ((i & 2) == 0)
-						dblAlt = 1.0;
-					else
-						dblAlt = -1.0;
-
-                if ((que & 2) == 2)
+            for (int ix = 0; ix < listinv.Items.Count - 1; ix++) // derecho por inversiones pero el cero final no
+            {
+                impar = ix % 2;
+                trazo = (impar == 0) ? (byte)2 : (byte)1;
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                for (int plieg = 0; plieg < nFolds; plieg++)
                 {
-                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
-                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
+                    impar = plieg % 2;
+                    y = plieg * dblFoldWidth;
+                    dx = dblFoldWidth / Math.Tan(angradian);
+                    toca = ((plieg + 1) % 4 == 0 | (plieg % 4) == 0);
+                    if (bAlternate & toca) dx = -dx;
+                    (p1x, p1y, p2x, p2y) = Encaja(nuevorig - (impar - 1) * dx, y, nuevorig + dx * impar, y + dblFoldWidth);
+                    if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
-                if ((que & 1) == 1)
+            }
+            // Horizontales
+            int externo;
+            for (int plieg = 1; plieg < nFolds; plieg++)
+            {
+                toca = (plieg % 4 == 0 & bAlternate);
+                externo = plieg % 2; //Los externos son los impares
+                y = plieg * dblFoldWidth;
+                v1x = 0;
+                if (externo == 0) //Izquierdos internos
                 {
-                    //g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
-                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
-                    //g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
+                    tam = listinv.Items.Count - 1;
+                    for (int ix = tam - 1; ix >= 0; ix--)
+                    {
+                        impar = ix % 2;
+                        trazo = (impar == 1) ? 1 : 2;
+                        prueba = ix - (a = toca ? 1 : 0) * (tam - 1);
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        dvx = dblFoldWidth / Math.Tan(angradian);
+                        if (toca) dvx = -dvx;
+                        v2x = dblSideHeight - dvx;
+                        (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                        try
+                        {
+                            if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                        }
+                        catch { }
+                        v1x = v2x;
+                    }
                 }
-
-				if ( bAlternate )
-					if ( (i&2)== 0 )
-						dblAlt = -1.0;
-					else
-						dblAlt = 1.0;
-
-                if ((que & 2) == 2)
+                else //Izquierdos externos
                 {
-                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
+                    trazo = (listinv.Items.Count % 2 == 1) ? (byte)2 : (byte)1;
+                    (p1x, p1y, p2x, p2y) = Encaja(0, y, dblSideHeight, y);
+                    if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                    v1x = dblSideHeight;
                 }
-                if ((que & 1) == 1) //exterior bajo
+                //Central
+                trazo = (externo == 1) ? 2 : 1;
+                tam = listinv.Items.Count - 1;
+                prueba = (a = toca ? 1 : 0) * (tam - 1);
+                angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                dvx = dblFoldWidth / Math.Tan(angradian);
+                if (toca) dvx = -dvx;
+                v2x = nuevorig - dvx * (externo - 1);
+                (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+                v1x = v2x;
+                if (externo == 0)//Derechos Internos
                 {
-                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-                    g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
+                    for (int ix = 1; ix < tam; ix++)
+                    {
+                        impar = ix % 2;
+                        trazo = (impar == 0) ? 1 : 2;
+                        prueba = ix - (a = toca ? 1 : 0) * (tam - 1);
+                        angradian = Math.PI / 180.0 * float.Parse(listinv.Items[Math.Abs(prueba)].ToString(), CultureInfo.GetCultureInfo("en-GB"));
+                        dvx = dblFoldWidth / Math.Tan(angradian);
+                        if (toca) dvx = -dvx;
+                        v2x = nuevorig + dvx;
+                        (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                        try { if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y); }
+                        catch { }
+                        v1x = v2x; if (v1x > dblPaperWidth) v1x = dblPaperWidth;
+                    }
+                    trazo = (listinv.Items.Count % 2 == 0) ? (byte)2 : (byte)1;
+                    v2x = dblPaperWidth; //ultima derecha
+                    (p1x, p1y, p2x, p2y) = Encaja(v1x, y, v2x, y);
+                    if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
-
-				if (bAlternate) 
-					if ( (i & 2) == 0)
-						dblAlt = 1.0;
-					else
-						dblAlt = -1.0;
-
-                if ((que & 2) == 2)
+                else //Derechos Externos
                 {
-
-                    g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-                    g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
+                    trazo = (listinv.Items.Count % 2 == 1) ? 2 : 1;
+                    (p1x, p1y, p2x, p2y) = Encaja(nuevorig, y, dblPaperWidth, y);
+                    if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
-
-                if ((que & 1) == 1) //exterior alto
-                {
-                    g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-                    g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-                }
-			}
-
-		}
+            }
+            cnclin[1] += Corolario;
+            return (cnclin[2] + cnclin[1]);
+        } /*GenFuelles*/
 
 		private void btnPrint_Click(object sender, EventArgs e)
 		{
@@ -430,137 +476,6 @@ namespace Fuelles
 			}
 		}
 
-        public String GenBellows(Graphics g)
-        {      
-            String solido = "";
-            String punteado ="\n(MSG,Oprime CONTINUA)\nM0\n";
-            String Preambulo = "G01 F100\n";
-            String Corolario = "G00 Z5 M2\n";
-            if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
-            int continua = 0;
-            int discontinua = 1;
-            double dblFoldWidth;
-            double dblHeight;
-            gradbeta = 0.0f;
-
-            if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
-                return(Preambulo);
-
-            if (!double.TryParse(txtHeight.Text, out dblHeight))
-                return(Preambulo);
-
-            dblPaperHeight = (double)nFolds * dblFoldWidth;
-
-            Pen oSolidPen;
-            Pen oDottedPen;
-            if (!m_bCalculationError)
-            {
-                oSolidPen = new Pen(Color.Black, 0.25f);
-                oDottedPen = new Pen(Color.Red, 0.25f);
-            }
-            else
-            {
-                oSolidPen = new Pen(Color.Green, 0.25f);
-                oDottedPen = new Pen(Color.Cyan, 0.25f);
-            }
-
-            oDottedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
-
-            double a1 = 72.57 / 180.0 * Math.PI;
-            double a2 = 27.57 / 180.0 * Math.PI;
-
-            double x1 = dblHeight + dblFoldWidth;
-            double x2 = dblPaperWidth - x1;
-
-            bool bAlternate = chkAlternateFolds.Checked;
-
-            g.DrawRectangle(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);// marco
-            g.DrawLine(oSolidPen, 0, 0, (float)dblPaperWidth, (float)dblPaperHeight);//linea de seguimiento
-            solido += Preambulo;
-            punteado += Preambulo;
-            dvC = float.Parse(dlg.txtCutterOffset.Text, CultureInfo.GetCultureInfo("en-GB"));
-            angD = float.Parse(dlg.numericUpDown1.Text);
-            xC = float.Parse(dlg.CentroX.Text, CultureInfo.GetCultureInfo("en-GB"));
-            yC = float.Parse(dlg.CentroY.Text, CultureInfo.GetCultureInfo("en-GB"));
-
-            for (int i = 0; i < nFolds; i += 2)
-            {
-                double dxa1 = dblFoldWidth / Math.Tan(a1);
-                double dxa2 = dblFoldWidth / Math.Tan(a2);
-
-                double y = (double)(i + 1) * dblFoldWidth;
-                g.DrawLine(oSolidPen, 0, (float)y, (float)dblPaperWidth, (float)y);
-                solido += A_Linea_CNC (continua, 0, (float)y, (float)dblPaperWidth, (float)y);
-
-                g.DrawLine(oSolidPen, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
-                solido += A_Linea_CNC (continua, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
-
-                g.DrawLine(oSolidPen, (float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
-                solido += A_Linea_CNC (continua,(float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
-
-                double dblAlt = 1.0;
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = 1.0;
-                    else
-                        dblAlt = -1.0;
-
-                g.DrawLine(oDottedPen, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
-                punteado += A_Linea_CNC (discontinua, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
-
-                g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
-                solido += A_Linea_CNC(continua, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
-
-                g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
-                punteado += A_Linea_CNC(discontinua, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
-
-                g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
-                solido += A_Linea_CNC(continua,(float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
-
-                g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
-                punteado += A_Linea_CNC(discontinua, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
-
-
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = -1.0;
-                    else
-                        dblAlt = 1.0;
-
-                g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-                punteado += A_Linea_CNC(discontinua, (float)(x1 - dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-
-                g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-                solido += A_Linea_CNC(continua,(float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-
-                g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-                punteado += A_Linea_CNC(discontinua,(float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-
-                g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-                solido += A_Linea_CNC(continua,(float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = 1.0;
-                    else
-                        dblAlt = -1.0;
-
-                g.DrawLine(oDottedPen, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-                punteado += A_Linea_CNC(discontinua,(float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-
-                g.DrawLine(oSolidPen, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-                solido += A_Linea_CNC(continua, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-
-                g.DrawLine(oDottedPen, (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-                punteado += A_Linea_CNC(discontinua,(float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-
-                g.DrawLine(oSolidPen, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-                solido += A_Linea_CNC(continua,(float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-
-            }
-            punteado += Corolario;
-            return (solido+punteado);
-        }
         private (float,float)  Rotn(float x, float y, float angulo)
         {
             double Deg2Rad = Math.PI / 180.0;
@@ -611,7 +526,7 @@ namespace Fuelles
             Linea += "G01 Z0\n";
             if (!dlg.gobierno.Checked)
                 {
-                if (gradalfa > gradbeta) { Linea += ("G3 X");}
+                if (gradalfa < gradbeta) { Linea += ("G3 X");}
                 else { Linea += ("G2 X");}
                 Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
                 Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
@@ -913,6 +828,7 @@ namespace Fuelles
 
         private void Pliegues_SelectedIndexChanged(object sender, EventArgs e)
         {
+            btnGCode.Enabled = (pliegues.CheckedItems.Count == 0) ? false : true;
             UpdateCalculations();
         }
 
@@ -989,8 +905,8 @@ namespace Fuelles
         private void btnGCode_Click(object sender, EventArgs e)
         {
            dlg = new GenerateGCode(this);
-            dlg.CentroX.Text = (this.dblPaperWidth/2).ToString();
-            dlg.CentroY.Text = (this.nFolds* this.dblFoldWidth / 2).ToString();
+            dlg.CentroX.Text = (this.dblPaperWidth/2).ToString(CultureInfo.GetCultureInfo("en-GB")) ;
+            dlg.CentroY.Text = (this.nFolds* this.dblFoldWidth / 2).ToString(CultureInfo.GetCultureInfo("en-GB"));
             if ( dlg.ShowDialog(this) == DialogResult.OK )
             {
             }
