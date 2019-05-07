@@ -53,8 +53,8 @@ namespace Fuelles
 
         private void BtnOK_Click(object sender, EventArgs e)
         {
-            string anves="";
-            string reves="";
+            //string anves="";
+            //string reves="";
             string textReaderText;
             System.IO.Stream myStream;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -66,9 +66,10 @@ namespace Fuelles
             //textReaderText = formulario.RayaFuelles();
             if (formulario.pliegues.CheckedItems.Count > 0)
             {
-                if (formulario.pliegues.CheckedItems.Contains("Picos") == true) anves = formulario.GenFuelles(2);
-                if (formulario.pliegues.CheckedItems.Contains("Valles") == true) reves = formulario.GenFuelles(1);
-                textReaderText = anves + reves;
+                //if (formulario.pliegues.CheckedItems.Contains("Picos") == true) anves = formulario.GenFuelles(2);
+                //if (formulario.pliegues.CheckedItems.Contains("Valles") == true) reves = formulario.GenFuelles(1);
+                //textReaderText = anves + reves;
+                textReaderText = formulario.RayaFuelles();
                 byte[] array = Encoding.ASCII.GetBytes(textReaderText);
                 int longi = array.Length;
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)

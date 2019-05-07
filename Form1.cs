@@ -314,7 +314,7 @@ namespace Fuelles
 
             }
         } /*PintaFuelles*/
-        public String GenFuelles(byte queparte )
+        public String GenFuelles(/*byte queparte*/ )
         {
             /*
             Este procedimiento solo es valido anverso (2) o reverso (1) pero no ambos(3)
@@ -336,9 +336,14 @@ namespace Fuelles
             double y, dx, dvx;
             double p1x, p1y, p2x, p2y, v1x, v2x;
             int impar, tam, a, prueba;
-            byte que = queparte;
+            byte que = 0;// queparte;
             bool toca;
-            if(que ==3) cnclin[1] = espera;
+            if (pliegues.CheckedItems.Count > 0)
+            {
+                if (pliegues.CheckedItems.Contains("Picos") == true) que = 2;
+                if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
+            }
+            if (que ==3) cnclin[1] = espera;
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return("Error en ancho de pliegue");
 
