@@ -537,7 +537,7 @@ namespace Fuelles
             Linea += "G01 Z0\n";
             if (!dlg.gobierno.Checked)
                 {
-                if (gradalfa < gradbetas[tipo]) { Linea += ("G3 X");}
+                if (gradalfa < gradbetas[tipo]+ Math.PI) { Linea += ("G3 X");}
                 else { Linea += ("G2 X");}
                 Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
                 Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));

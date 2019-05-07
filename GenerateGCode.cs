@@ -69,7 +69,7 @@ namespace Fuelles
                 //if (formulario.pliegues.CheckedItems.Contains("Picos") == true) anves = formulario.GenFuelles(2);
                 //if (formulario.pliegues.CheckedItems.Contains("Valles") == true) reves = formulario.GenFuelles(1);
                 //textReaderText = anves + reves;
-                textReaderText = formulario.RayaFuelles();
+                textReaderText = formulario.GenFuelles();
                 byte[] array = Encoding.ASCII.GetBytes(textReaderText);
                 int longi = array.Length;
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
