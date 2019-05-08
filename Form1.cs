@@ -541,8 +541,16 @@ namespace Fuelles
                 //Console.Write("gradbeta= "+ gradbeta.ToString()+ "  gradalfa= " + gradalfa.ToString());
                 if (Math.Abs(gradalfa - gradbeta) > 0.1)
                 {
-                    if (gradalfa > gradbeta) { Linea += ("G3 X"); /*Console.Write(" G3\n");*/ }
-                    else { Linea += (" G2 X"); /*Console.Write("G2\n");*/ }
+                    if (Math.Abs(gradalfa-gradbeta) < 180)
+                    {
+                        if (gradalfa > gradbeta) { Linea += ("G3 X"); /*Console.Write(" G3\n");*/ }
+                        else { Linea += (" G2 X"); /*Console.Write("G2\n");*/ }
+                    }
+                    else
+                    {
+                        if (gradalfa > gradbeta) { Linea += ("G2 X"); /*Console.Write("G2\n");*/}
+                        else { Linea += (" G3 X");/*Console.Write(" G3\n");*/ }
+                    }
                 }
                 //Console.Write("Presiona una tecla para seguir...\n");
                 //Console.ReadKey(true);
