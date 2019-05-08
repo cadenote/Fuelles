@@ -97,6 +97,9 @@ namespace Fuelles
                 }
             else this.gobierno.Enabled = true;
         }
-
+        private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            numericUpDown1.Text = numericUpDown1.Text.Replace('.', ',');
+        }
     }
 }

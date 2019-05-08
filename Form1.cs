@@ -36,6 +36,7 @@ namespace Fuelles
         double dblPaperHeight;
         double dblFoldWidth;
         float[] gradbetas = new float[3] { 0,0,0 };
+        float gradbeta;
         int nFolds;
         int nPage;
         int nPages;
@@ -317,17 +318,14 @@ namespace Fuelles
         public String GenFuelles(/*byte queparte*/ )
         {
             /*
-            Este procedimiento solo es valido anverso (2) o reverso (1) pero no ambos(3)
-            porque en el caso de ambos(3)las lineas picos y valles se generian de manera no consecutiva
-            y por tanto las gragbetas anteriores serian erroneas.
-            Esto se puede arreglar guardando esos datos por separado o llamando al procedimiento dos veces.
+            Modificado para poder generar picos y valles con solo una llamada
             */
             string espera = "\n(MSG,Oprime CONTINUA)\nM0\n";
             string Preambulo = "G01 F100\n";
             string Corolario = "G00 Z5 M2\n";
             string[] cnclin = new string [3];
             if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
-            cnclin[2] = Preambulo;
+            cnclin[2] = Preambulo; //picos 
             int trazo;
             double dblFoldWidth;
             double dblHeight;
@@ -343,7 +341,7 @@ namespace Fuelles
                 if (pliegues.CheckedItems.Contains("Picos") == true) que = 2;
                 if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
             }
-            if (que ==3) cnclin[1] = espera;
+            if (que ==3) cnclin[1] = espera; //Para poder voltear la pieza y poner cuchilla a cero
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return("Error en ancho de pliegue");
 
@@ -366,8 +364,7 @@ namespace Fuelles
             //quebradas verticales duplico el bucle para no interrupir trazados
             for (int ix = 0; ix < listinv.Items.Count - 1; ix++) // izquierdo por inversiones pero el cero final no
             {
-                impar = ix % 2;
-                trazo = (impar == 0) ? 2 : 1;
+                trazo = (ix % 2 == 0) ? 2 : 1;
                 angradian = Math.PI / 180.0 * float.Parse(listinv.Items[ix].ToString(), CultureInfo.GetCultureInfo("en-GB"));
                 for (int plieg = 0; plieg < nFolds; plieg++)
                 {
@@ -510,6 +507,7 @@ namespace Fuelles
             //Centra
             xxx1 -= xC; xxx2 -= xC;
             yyy1 -= yC; yyy2 -= yC;
+            yyy1 *= -1; yyy2 *= -1;// En la maquina el eje y va para arriba
             if (dlg.Resorte.Checked) gradbetas[tipo] = 0.0f; //Lo obligo al angulo del resorte
             //Rotamos el dibujo
             (float xx1, float yy1) = Rotn(xxx1, yyy1,angD);
@@ -523,6 +521,9 @@ namespace Fuelles
             //En realidad tengo que desplazar los puntos 'desvio'  segun la linea
             double radalfa = Math.Atan2(yy2 - yy1, xx2 - xx1);
             float gradalfa = (float)(radalfa * (180.0 / Math.PI));
+            gradbeta = gradbetas[tipo];
+            if(Math.Abs(gradalfa)==180 & Math.Sign(gradalfa) != Math.Sign(gradbeta)) gradalfa *= -1;
+            if (Math.Abs(gradbeta) == 180 & Math.Sign(gradalfa) != Math.Sign(gradbeta)) gradbeta *= -1;
             Linea += "G00 Z5\n";
             //Si podemos orientar la cuchilla...
             if (dlg.gobierno.Checked)
@@ -535,10 +536,16 @@ namespace Fuelles
             Linea += ("X" + (xx1 + dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
             Linea += (" Y" + (yy1 + dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"))+ '\n');
             Linea += "G01 Z0\n";
-            if (!dlg.gobierno.Checked)
+            if (!dlg.gobierno.Checked) // No manejo eje A
                 {
-                if (gradalfa < gradbetas[tipo]+ Math.PI) { Linea += ("G3 X");}
-                else { Linea += ("G2 X");}
+                //Console.Write("gradbeta= "+ gradbeta.ToString()+ "  gradalfa= " + gradalfa.ToString());
+                if (Math.Abs(gradalfa - gradbeta) > 0.1)
+                {
+                    if (gradalfa > gradbeta) { Linea += ("G3 X"); /*Console.Write(" G3\n");*/ }
+                    else { Linea += (" G2 X"); /*Console.Write("G2\n");*/ }
+                }
+                //Console.Write("Presiona una tecla para seguir...\n");
+                //Console.ReadKey(true);
                 Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
                 Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
                 Linea += (" I" + (-dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
