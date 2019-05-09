@@ -547,11 +547,11 @@ namespace Fuelles
             Linea += (" Y" + (yy1 + dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"))+ '\n');
             Linea += "G01 Z0\n";
             if (!dlg.gobierno.Checked) // No manejo eje A
-                {
+            {
                 //Console.Write("gradbeta= "+ gradbeta.ToString()+ "  gradalfa= " + gradalfa.ToString());
-                if (Math.Abs(gradalfa - gradbeta) > 0.1)
+                if (Math.Abs(gradalfa - gradbeta) > 0.1) //Si no estan alineados
                 {
-                    if (Math.Abs(gradalfa-gradbeta) < 180)
+                    if (Math.Abs(gradalfa - gradbeta) < 180)
                     {
                         if (gradalfa > gradbeta) { Linea += ("G3 X"); /*Console.Write(" G3\n");*/ }
                         else { Linea += (" G2 X"); /*Console.Write("G2\n");*/ }
@@ -561,14 +561,15 @@ namespace Fuelles
                         if (gradalfa > gradbeta) { Linea += ("G2 X"); /*Console.Write("G2\n");*/}
                         else { Linea += (" G3 X");/*Console.Write(" G3\n");*/ }
                     }
+
+                    //Console.Write("Presiona una tecla para seguir...\n");
+                    //Console.ReadKey(true);
+                    Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
+                    Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
+                    Linea += (" I" + (-dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
+                    Linea += (" J" + (-dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")) + '\n');
                 }
-                //Console.Write("Presiona una tecla para seguir...\n");
-                //Console.ReadKey(true);
-                Linea += (xx1 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB"));
-                Linea += (" Y" + (yy1 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
-                Linea += (" I" + (-dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
-                Linea += (" J" + (-dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")) + '\n');
-                }
+            }
             Linea += ("G01 X" + (xx2 + Dx).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")));
             Linea += (" Y" + (yy2 + Dy).ToString("0.000", CultureInfo.GetCultureInfo("en-GB")) + '\n');
             gradbetas[tipo] = gradalfa;
