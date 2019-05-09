@@ -320,7 +320,7 @@ namespace Fuelles
             /*
             Modificado para poder generar picos y valles con solo una llamada
             */
-            string espera = "\n(MSG,Oprime CONTINUA)\nM0\n";
+            string espera = "\nG00 Z20 \n(MSG,Oprime CONTINUA)\nM0\n";
             string Preambulo = "G01 F100\n";
             string Corolario = "G00 Z5 M2\n";
             string[] cnclin = new string [3];
