@@ -360,6 +360,16 @@ namespace Fuelles
             angD = float.Parse(dlg.numericUpDown1.Text);
             xC = float.Parse(dlg.CentroX.Text, CultureInfo.GetCultureInfo("en-GB"));
             yC = float.Parse(dlg.CentroY.Text, CultureInfo.GetCultureInfo("en-GB"));
+            //Marco
+            trazo = 2;// En anverso de momento
+            (p1x, p1y, p2x, p2y) = Encaja(0, 0, (float)dblPaperWidth, 0);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja((float)dblPaperWidth,0, (float)dblPaperWidth,(float)dblPaperHeight);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja((float)dblPaperWidth, (float)dblPaperHeight,0, (float)dblPaperHeight);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja(0, (float)dblPaperHeight, 0, 0);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
 
             //quebradas verticales duplico el bucle para no interrupir trazados
             for (int ix = 0; ix < listinv.Items.Count - 1; ix++) // izquierdo por inversiones pero el cero final no
@@ -585,103 +595,6 @@ namespace Fuelles
                 listinv.Items.Insert(0, valor);
                 }
             }
-        public String RayaFuelles()
-        {
-            String solido = "";
-            String punteado = "\n(MSG,Oprime CONTINUA)\nM0\n";
-            String Preambulo = "G01 F100\n";
-            String Corolario = "G00 Z5 M2\n";
-            if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
-            int continua = 0;
-            int discontinua = 1;
-            double dblFoldWidth;
-            double dblHeight;
-
-            if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
-                return ("Error en Ancho");
-
-            if (!double.TryParse(txtHeight.Text, out dblHeight))
-                return ("Error en Alto");
-
-            dblPaperHeight = (double)nFolds * dblFoldWidth;
-
-            double a1 = 72.57 / 180.0 * Math.PI;
-            double a2 = 27.57 / 180.0 * Math.PI;
-
-            double x1 = dblHeight + dblFoldWidth;
-            double x2 = dblPaperWidth - x1;
-
-            bool bAlternate = chkAlternateFolds.Checked;
-
-            solido += Preambulo;
-            punteado += Preambulo;
-            dvC = float.Parse(dlg.txtCutterOffset.Text, CultureInfo.GetCultureInfo("en-GB"));
-            angD = float.Parse(dlg.numericUpDown1.Text);
-            xC = float.Parse(dlg.CentroX.Text, CultureInfo.GetCultureInfo("en-GB"));
-            yC = float.Parse(dlg.CentroY.Text, CultureInfo.GetCultureInfo("en-GB"));
-
-            for (int i = 0; i < nFolds; i += 2)
-            {
-                double dxa1 = dblFoldWidth / Math.Tan(a1);
-                double dxa2 = dblFoldWidth / Math.Tan(a2);
-
-                double y = (double)(i + 1) * dblFoldWidth;
-                solido += A_Linea_CNC(continua, 0, (float)y, (float)dblPaperWidth, (float)y);
-
-                solido += A_Linea_CNC(continua, 0, (float)(y - dblFoldWidth), 0, (float)(float)(y + dblFoldWidth));
-
-                solido += A_Linea_CNC(continua, (float)dblPaperWidth, (float)(y - dblFoldWidth), (float)dblPaperWidth, (float)(float)(y + dblFoldWidth));
-
-                double dblAlt = 1.0;
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = 1.0;
-                    else
-                        dblAlt = -1.0;
-
-                punteado += A_Linea_CNC(discontinua, 0, (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth));
-
-                solido += A_Linea_CNC(continua, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth));
-
-                punteado += A_Linea_CNC(discontinua, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth));
-
-                solido += A_Linea_CNC(continua, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth));
-
-                punteado += A_Linea_CNC(discontinua, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(dblPaperWidth), (float)(y + dblFoldWidth));
-
-
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = -1.0;
-                    else
-                        dblAlt = 1.0;
-
-                punteado += A_Linea_CNC(discontinua, (float)(x1 - dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-
-                solido += A_Linea_CNC(continua, (float)(x1 - dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x1), (float)(y));
-
-                punteado += A_Linea_CNC(discontinua, (float)(x2 + dblAlt * dxa2), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-
-                solido += A_Linea_CNC(continua, (float)(x2 + dblAlt * dxa1), (float)(y - dblFoldWidth), (float)(x2), (float)(y));
-
-                if (bAlternate)
-                    if ((i & 2) == 0)
-                        dblAlt = 1.0;
-                    else
-                        dblAlt = -1.0;
-
-                punteado += A_Linea_CNC(discontinua, (float)(x1 - dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-
-                solido += A_Linea_CNC(continua, (float)(x1 - dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x1), (float)(y));
-
-                punteado += A_Linea_CNC(discontinua, (float)(x2 + dblAlt * dxa2), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-
-                solido += A_Linea_CNC(continua, (float)(x2 + dblAlt * dxa1), (float)(y + dblFoldWidth), (float)(x2), (float)(y));
-
-            }
-            punteado += Corolario;
-            return (solido + punteado);
-        }
 
         private void btnPrintSetup_Click(object sender, EventArgs e)
 		{
