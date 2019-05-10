@@ -322,9 +322,9 @@ namespace Fuelles
             */
             string espera = "\nG00 Z20 \n(MSG,Oprime CONTINUA)\nM0\n";
             string Preambulo = "G01 F100\n";
-            string Corolario = "G00 Z5 M2\n";
+            string Corolario = "G00 Z20 M2\n";
             string[] cnclin = new string [3];
-            if (dlg.gobierno.Checked) Corolario = "G00 Z5 A0 M2\n";
+            if (dlg.gobierno.Checked) Corolario = "G00 Z20 A0 M2\n";
             cnclin[2] = Preambulo; //picos 
             int trazo;
             double dblFoldWidth;
@@ -831,6 +831,12 @@ namespace Fuelles
                 {
                 listinv.Items.RemoveAt(quepasa);
                 }
+            if (listinv.Items.Count < 3)
+                {
+                chkAlternateFolds.Checked = false;
+                chkAlternateFolds.Enabled = false;
+                }
+            else chkAlternateFolds.Enabled = true;
             //actualiza angulo pared()
             actualizapared();
             UpdateCalculations();
