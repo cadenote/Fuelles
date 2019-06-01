@@ -151,7 +151,7 @@ namespace Fuelles
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.DecimalPlaces = 1;
+            this.numericUpDown1.DecimalPlaces = 2;
             this.numericUpDown1.Location = new System.Drawing.Point(162, 131);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             360,
@@ -162,6 +162,7 @@ namespace Fuelles
             this.numericUpDown1.Size = new System.Drawing.Size(100, 22);
             this.numericUpDown1.TabIndex = 8;
             this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.NumericUpDown1_ValueChanged);
             // 
             // label2
             // 

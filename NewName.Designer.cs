@@ -59,19 +59,19 @@ namespace Fuelles
             this.label1.Location = new System.Drawing.Point(10, 16);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(200, 17);
+            this.label1.Size = new System.Drawing.Size(251, 17);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Enter new configuration name.";
+            this.label1.Text = "Escribe Nombre de esta Configuracion";
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(62, 95);
+            this.btnOK.Location = new System.Drawing.Point(6, 95);
             this.btnOK.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(73, 28);
+            this.btnOK.Size = new System.Drawing.Size(196, 28);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -81,20 +81,20 @@ namespace Fuelles
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(174, 95);
+            this.btnCancel.Location = new System.Drawing.Point(223, 95);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(73, 28);
+            this.btnCancel.Size = new System.Drawing.Size(196, 28);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(136, 12);
+            this.txtName.Location = new System.Drawing.Point(148, 46);
             this.txtName.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(150, 22);
+            this.txtName.Size = new System.Drawing.Size(180, 22);
             this.txtName.TabIndex = 0;
             // 
             // NewName
@@ -104,7 +104,7 @@ namespace Fuelles
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(307, 137);
+            this.ClientSize = new System.Drawing.Size(430, 137);
             this.ControlBox = false;
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.btnCancel);

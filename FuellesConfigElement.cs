@@ -29,12 +29,6 @@ namespace Fuelles
 		{
 		}
 
-		public enum EBellowsShape
-		{
-			MediaCubierta=1,
-			CajaCerrada=2,
-            Abierta=3
-		};
 
 		[ConfigurationProperty("Name", DefaultValue = "Default", IsRequired = true, IsKey = true)]
 		public string Name
@@ -49,31 +43,18 @@ namespace Fuelles
 			}
 		}
 
-		[ConfigurationProperty("BellowsShape", DefaultValue = EBellowsShape.MediaCubierta)]
-		//[IntegerValidator(MinValue = 1, MaxValue = 2)]
-		public EBellowsShape BellowsShape
-		{
-			get
-			{
-				return (EBellowsShape)this["BellowsShape"];
-			}
-			set
-			{
-				this["BellowsShape"] = value;
-			}
-		}
-
-		[ConfigurationProperty("Inversions", DefaultValue = 2)]
+		
+		[ConfigurationProperty("Inversiones", DefaultValue = "72.57,27.57,0.0")]
 		//[IntegerValidator(MinValue = 1, MaxValue = 4)]
-		public int Inversions
+		public string Inversiones
 		{
 			get
 			{
-				return (int)this["Inversions"];
+				return (string)this["Inversiones"];
 			}
 			set
 			{
-				this["Inversions"] = value;
+				this["Inversiones"] = value;
 			}
 		}
 
@@ -89,7 +70,7 @@ namespace Fuelles
 				this["Width"] = value;
 			}
 		}
-		[ConfigurationProperty("Height", DefaultValue = 80.0)]
+		[ConfigurationProperty("Height", DefaultValue = 16.0)]
 		public double Height
 		{
 			get
@@ -101,7 +82,7 @@ namespace Fuelles
 				this["Height"] = value;
 			}
 		}
-		[ConfigurationProperty("Length", DefaultValue = 150.0)]
+		[ConfigurationProperty("Length", DefaultValue = 100.0)]
 		public double Length
 		{
 			get
@@ -113,7 +94,7 @@ namespace Fuelles
 				this["Length"] = value;
 			}
 		}
-		[ConfigurationProperty("FoldWidth", DefaultValue = 10.0)]
+		[ConfigurationProperty("FoldWidth", DefaultValue = 16.0)]
 		public double FoldWidth
 		{
 			get
@@ -125,7 +106,7 @@ namespace Fuelles
 				this["FoldWidth"] = value;
 			}
 		}
-		[ConfigurationProperty("MountFolds", DefaultValue = 4)]
+		[ConfigurationProperty("MountFolds", DefaultValue = 2)]
 		//[IntegerValidator(MinValue = 0, MaxValue = 10)]
 		public int MountFolds
 		{
