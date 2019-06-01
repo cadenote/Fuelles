@@ -7,7 +7,7 @@ Download and uncompress zip file.</br>
 Move to bin/Release directory and execute Fuelles.exe</br>
 
 Obtiene el fichero gcode necesario para producir las dobleces de un fuelle</br>
-De momento solo esta compilado para Windows (7 o mas), estoy trabajando con tkinter para </br>
+De momento solo esta compilado para Windows (7 o mas), estoy estudiando tkinter para </br>
 ofrecer una version Python.</br>
 En Windows es necesario instalar Net.Framework antes de ejecutar Fuelles.exe</br>
 Descarga y descomprime el fichero zip</br>
