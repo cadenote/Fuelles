@@ -53,22 +53,14 @@ namespace Fuelles
 
         private void BtnOK_Click(object sender, EventArgs e)
         {
-            //string anves="";
-            //string reves="";
             string textReaderText;
             System.IO.Stream myStream;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.InitialDirectory = txtOutputFile.Text;
             saveFileDialog1.Filter = "Ficheros LinuxCnC (*.ngc)|*.ngc|Ficheros grbl (*.nc)|*.nc|All files (*.*)|*.*";
             saveFileDialog1.FilterIndex = 3;
-            //saveFileDialog1.RestoreDirectory = true;
-            //textReaderText=formulario.GenBellows(pinta.Graphics);
-            //textReaderText = formulario.RayaFuelles();
             if (formulario.pliegues.CheckedItems.Count > 0)
             {
-                //if (formulario.pliegues.CheckedItems.Contains("Picos") == true) anves = formulario.GenFuelles(2);
-                //if (formulario.pliegues.CheckedItems.Contains("Valles") == true) reves = formulario.GenFuelles(1);
-                //textReaderText = anves + reves;
                 textReaderText = formulario.GenFuelles();
                 byte[] array = Encoding.ASCII.GetBytes(textReaderText);
                 int longi = array.Length;

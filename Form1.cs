@@ -320,8 +320,8 @@ namespace Fuelles
             /*
             Modificado para poder generar picos y valles con solo una llamada
             */
-            string espera = "\nG00 Z20 \n(MSG,Oprime CONTINUA)\nM0\n";
-            string Preambulo = "G01 F100\n";
+            string espera = "\nG00 Z30 \n(MSG,Voltea la pieza y Oprime CONTINUA)\nM0\n";
+            string Preambulo = "G01 F300\n";
             string Corolario = "G00 Z20 M2\n";
             string[] cnclin = new string [3];
             if (dlg.gobierno.Checked) Corolario = "G00 Z20 A0 M2\n";
@@ -479,6 +479,17 @@ namespace Fuelles
                     if ((que & trazo) != 0) cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
                 }
             }
+            //Marco por detras
+            trazo = 1;// Ahora en reverso para rematar
+            (p1x, p1y, p2x, p2y) = Encaja(0, 0, (float)dblPaperWidth, 0);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja((float)dblPaperWidth, 0, (float)dblPaperWidth, (float)dblPaperHeight);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja((float)dblPaperWidth, (float)dblPaperHeight, 0, (float)dblPaperHeight);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            (p1x, p1y, p2x, p2y) = Encaja(0, (float)dblPaperHeight, 0, 0);
+            cnclin[trazo] += A_Linea_CNC(trazo, (float)p1x, (float)p1y, (float)p2x, (float)p2y);
+            //Termina
             if (que != 2) cnclin[1] += Corolario;
             else cnclin[2] += Corolario;
             return (cnclin[2] + cnclin[1]);
