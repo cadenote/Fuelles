@@ -43,6 +43,7 @@ namespace Fuelles
         Configuration m_Config;
         FuellesConfigElement m_CurrentElement;
         bool m_bCalculationError;
+        bool semaltura = true; //Para no bajar sin estar en zona
         GenerateGCode dlg;
         float dvC, angD, xC, yC;
 
@@ -341,7 +342,9 @@ namespace Fuelles
                 if (pliegues.CheckedItems.Contains("Picos") == true) que = 2;
                 if (pliegues.CheckedItems.Contains("Valles") == true) que += 1;
             }
-            if (que ==3) cnclin[1] = espera; //Para poder voltear la pieza y poner cuchilla a cero
+            if (que ==3)
+                cnclin[1] = espera; //Para poder voltear la pieza y poner cuchilla a cero
+                semaltura = false;
             if (!double.TryParse(txtFoldWidth.Text, out dblFoldWidth))
                 return("Error en ancho de pliegue");
 
@@ -524,6 +527,7 @@ namespace Fuelles
 
         private string A_Linea_CNC (int tipo, float xxx1, float yyy1, float xxx2, float yyy2)
         {
+            int altura=5;
             String Linea = "";
             //Centra
             xxx1 -= xC; xxx2 -= xC;
@@ -538,6 +542,7 @@ namespace Fuelles
                 {
                 if (dlg.reverso.CheckedItems.Contains("EspejoX") == true) { xx1 = -xx1; xx2 = -xx2; }
                 if (dlg.reverso.CheckedItems.Contains("EspejoY") == true) { yy1 = -yy1; yy2 = -yy2; }
+                if (semaltura == false) { altura = 30; semaltura = true; } 
                 }
             //En realidad tengo que desplazar los puntos 'desvio'  segun la linea
             double radalfa = Math.Atan2(yy2 - yy1, xx2 - xx1);
@@ -545,7 +550,7 @@ namespace Fuelles
             gradbeta = gradbetas[tipo];
             if(Math.Abs(gradalfa)==180 & Math.Sign(gradalfa) != Math.Sign(gradbeta)) gradalfa *= -1;
             if (Math.Abs(gradbeta) == 180 & Math.Sign(gradalfa) != Math.Sign(gradbeta)) gradbeta *= -1;
-            Linea += "G00 Z5\n";
+            Linea += "G00 Z"+ altura.ToString()+"\n";
             //Si podemos orientar la cuchilla...
             if (dlg.gobierno.Checked)
                 {
